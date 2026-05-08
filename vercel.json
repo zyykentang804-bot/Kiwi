@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "/api/raw",
+      "dest": "/api/raw.js"
+    },
+    {
+      "src": "/welcome",
+      "dest": "/index.html"
+    },
+    {
+      "src": "/",
+      "dest": "/website.html"
+    }
+  ]
+}
