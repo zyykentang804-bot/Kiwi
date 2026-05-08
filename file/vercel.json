@@ -1,18 +1,9 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "api/raw.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "api/list.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "index.html",
-      "use": "@vercel/static"
-    }
+    { "src": "api/raw.js", "use": "@vercel/node" },
+    { "src": "api/list.js", "use": "@vercel/node" },
+    { "src": "index.html", "use": "@vercel/static" }
   ],
   "routes": [
     { "src": "/api/raw", "dest": "/api/raw.js" },
