@@ -6,7 +6,7 @@
       "dest": "/api/raw.js"
     },
     {
-      "src": "/welcome",
+      "src": "/",
       "dest": "/index.html"
     },
     {
