@@ -1,0 +1,96 @@
+<!-- FILE: index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>SILENT HUB | Welcome</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background: radial-gradient(circle at center, #1a1a1a, #0a0a0a);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .welcome-container {
+            text-align: center;
+            animation: fadeInUp 1s ease;
+        }
+        .logo {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #e0e0e0, #888888);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .green-dot {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background: #0affbc;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #0affbc;
+            animation: blinkGreen 1.4s infinite ease-in-out;
+            vertical-align: middle;
+        }
+        .tagline {
+            color: #aaa;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 4px;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+        .click-hint {
+            color: #666;
+            font-size: 0.7rem;
+            animation: bounceSoft 1.2s infinite;
+            font-family: monospace;
+            margin-top: 2rem;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes blinkGreen {
+            0% { opacity: 0.4; transform: scale(0.9); box-shadow: 0 0 2px #0affbc; }
+            50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 12px #0affbc, 0 0 6px #0affbc; }
+            100% { opacity: 0.4; transform: scale(0.9); box-shadow: 0 0 2px #0affbc; }
+        }
+        @keyframes bounceSoft {
+            0%,100% { transform: translateY(0); opacity: 0.6; }
+            50% { transform: translateY(6px); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+<div class="welcome-container">
+    <div class="logo">
+        SILENT HUB
+        <span class="green-dot"></span>
+    </div>
+    <div class="tagline">⟫ PREMIUM SCRIPT HUB ⟪</div>
+    <div class="click-hint">▼ CLICK ANYWHERE TO ENTER ▼</div>
+</div>
+<script>
+    document.body.addEventListener('click', () => {
+        window.location.href = 'website.html';
+    });
+</script>
+</body>
+</html>
