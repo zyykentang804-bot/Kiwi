@@ -7,10 +7,6 @@
     },
     {
       "src": "/",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/",
       "dest": "/website.html"
     }
   ]
