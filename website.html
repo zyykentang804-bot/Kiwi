@@ -44,11 +44,13 @@ body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);ov
 .hdr-right{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
 .stat-pill{background:var(--card);border:1px solid var(--border2);padding:5px 11px;border-radius:3px;font-family:'Share Tech Mono',monospace;font-size:.55rem;color:#303030;display:flex;align-items:center;gap:6px}
 .sp-dot{width:5px;height:5px;border-radius:50%;background:#555;animation:blinkW 1.5s infinite}
+.sp-dot-g{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blinkG 1.2s infinite;box-shadow:var(--glow-g)}
 
-/* TABS */
-.tabs{display:flex;gap:0;margin-bottom:2rem;flex-wrap:wrap;border-bottom:1px solid var(--border)}
-.tab-btn{background:transparent;border:none;padding:.7rem 1.15rem;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.76rem;color:#282828;cursor:pointer;transition:color .15s,border-color .15s;letter-spacing:1.5px;border-bottom:2px solid transparent;display:flex;align-items:center;gap:6px}
-.tab-btn i{font-size:.66rem}
+/* TABS — pojok kanan */
+.tabs-wrap{display:flex;justify-content:flex-end;margin-bottom:2rem;border-bottom:1px solid var(--border)}
+.tabs{display:flex;gap:0;flex-wrap:wrap;justify-content:flex-end}
+.tab-btn{background:transparent;border:none;padding:.7rem 1.1rem;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.74rem;color:#282828;cursor:pointer;transition:color .15s,border-color .15s;letter-spacing:1.5px;border-bottom:2px solid transparent;display:flex;align-items:center;gap:6px}
+.tab-btn i{font-size:.65rem}
 .tab-btn:hover{color:#484848}
 .tab-btn.active{color:#a0a0a0;border-bottom:2px solid #555}
 .tab-panel{display:none}
@@ -63,7 +65,115 @@ body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);ov
 .sa{opacity:0;transform:translateY(14px);transition:opacity .32s ease,transform .32s ease}
 .sa.vis{opacity:1;transform:translateY(0)}
 
-/* FREE SCRIPT */
+/* ======= HOME TAB ======= */
+.home-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem}
+@media(max-width:900px){.home-grid{grid-template-columns:1fr}}
+
+/* info card */
+.home-info-card{
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:1.6rem;position:relative;overflow:hidden;
+  grid-column:1 / -1;
+}
+.home-info-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,#2a2a2a,transparent);
+}
+.hi-header{display:flex;align-items:center;gap:12px;margin-bottom:1.2rem}
+.hi-icon{
+  width:42px;height:42px;border-radius:9px;
+  background:#111;border:1px solid #222;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1rem;color:#666;flex-shrink:0;
+}
+.hi-title{font-family:'Orbitron',monospace;font-size:.88rem;font-weight:900;color:#d0d0d0;letter-spacing:2px}
+.hi-sub{font-family:'Share Tech Mono',monospace;font-size:.52rem;color:#2a2a2a;letter-spacing:1px;margin-top:3px}
+
+.hi-body{
+  font-size:.76rem;color:var(--text2);line-height:1.9;
+  border-left:2px solid #1e1e1e;padding-left:1rem;margin-bottom:1.2rem;
+}
+.hi-body strong{color:#888}
+
+.hi-timeline{display:flex;flex-direction:column;gap:.6rem;margin-top:1rem}
+.hi-tl-item{
+  display:flex;gap:10px;
+  background:#090909;border:1px solid var(--border);border-radius:7px;
+  padding:.65rem .85rem;align-items:flex-start;
+}
+.hi-tl-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:#333;flex-shrink:0;margin-top:4px;
+}
+.hi-tl-dot.g{background:var(--green);box-shadow:var(--glow-g);animation:blinkG 1.5s infinite}
+.hi-tl-dot.w{background:#555}
+.hi-tl-text{font-size:.72rem;color:var(--text2);line-height:1.5}
+.hi-tl-text strong{color:#888;display:block;font-size:.75rem;margin-bottom:2px}
+
+/* roblox online graph */
+.graph-card{
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:1.4rem;position:relative;overflow:hidden;
+}
+.gc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.gc-title{font-family:'Orbitron',monospace;font-size:.72rem;font-weight:700;color:#888;letter-spacing:2px}
+.gc-live{
+  display:flex;align-items:center;gap:5px;
+  font-family:'Share Tech Mono',monospace;font-size:.52rem;color:var(--green);
+}
+.gc-live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:var(--glow-g);animation:blinkG .9s infinite}
+.gc-count{
+  font-family:'Orbitron',monospace;font-size:1.8rem;font-weight:900;
+  color:#d0d0d0;margin-bottom:.3rem;letter-spacing:2px;
+}
+.gc-count span{font-size:.8rem;color:var(--text2);font-weight:400;letter-spacing:0}
+.gc-sub{font-family:'Share Tech Mono',monospace;font-size:.52rem;color:#2a2a2a;letter-spacing:1px;margin-bottom:1rem}
+
+/* SVG chart */
+.chart-wrap{width:100%;height:120px;position:relative}
+.chart-wrap svg{width:100%;height:100%;overflow:visible}
+.chart-line{fill:none;stroke:#333;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.chart-line.live{stroke:#444;stroke-width:1.5}
+.chart-area{fill:url(#areaGrad);opacity:.4}
+.chart-dot-live{
+  r:4;fill:#00cc77;
+  filter:drop-shadow(0 0 4px rgba(0,204,119,.8));
+  animation:dotPulse 1s ease-in-out infinite;
+}
+@keyframes dotPulse{0%,100%{r:3}50%{r:5}}
+.chart-grid-line{stroke:#111;stroke-width:1;stroke-dasharray:3,6}
+.chart-label{font-family:'Share Tech Mono',monospace;font-size:8px;fill:#2a2a2a}
+.chart-axis-label{font-family:'Share Tech Mono',monospace;font-size:7px;fill:#222}
+
+/* peak info */
+.gc-peaks{display:flex;gap:.8rem;margin-top:.8rem;flex-wrap:wrap}
+.gc-peak-item{
+  background:#090909;border:1px solid var(--border);border-radius:6px;
+  padding:.45rem .7rem;flex:1;min-width:80px;text-align:center;
+}
+.gcp-val{font-family:'Orbitron',monospace;font-size:.78rem;font-weight:700;color:#777}
+.gcp-lbl{font-family:'Share Tech Mono',monospace;font-size:.46rem;color:var(--muted);letter-spacing:1px;margin-top:2px}
+
+/* stats card */
+.stats-card{
+  background:var(--card);border:1px solid var(--border);border-radius:14px;
+  padding:1.4rem;
+}
+.sc2-title{font-family:'Orbitron',monospace;font-size:.72rem;font-weight:700;color:#888;letter-spacing:2px;margin-bottom:1.2rem}
+.skill-items{display:flex;flex-direction:column;gap:1rem}
+.sk2-item{}
+.sk2-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem}
+.sk2-name{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.76rem;color:var(--text2);letter-spacing:.5px}
+.sk2-pct{font-family:'Orbitron',monospace;font-size:.65rem;font-weight:700;color:#555}
+.sk2-bar{height:3px;background:#0e0e0e;border-radius:3px;overflow:hidden;position:relative}
+.sk2-fill{
+  height:100%;border-radius:3px;
+  background:linear-gradient(90deg,#2a2a2a,#888);
+  width:0;transition:width 1.2s cubic-bezier(.25,.46,.45,.94);
+}
+.sk2-fill.animated{width:var(--w)}
+
+/* ======= FREE SCRIPT ======= */
 .script-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:1.2rem}
 .script-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.4rem;transition:border-color .3s,transform .3s,box-shadow .3s;position:relative;overflow:hidden}
 .script-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#2e2e2e,transparent);opacity:0;transition:opacity .3s}
@@ -96,19 +206,6 @@ body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);ov
 .sc-tag{background:#0a0a0a;border:1px solid #1c1c1c;color:#252525;padding:9px 11px;border-radius:7px;font-family:'Share Tech Mono',monospace;font-size:.5rem;letter-spacing:1px;display:flex;align-items:center}
 .sc-tag.key{color:#3a2020;border-color:#2a1414}
 
-/* DESCRIPTION */
-.desc-wrap{max-width:620px;margin:0 auto}
-.desc-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:2.2rem;text-align:center;position:relative;overflow:hidden}
-.desc-card::before{content:'';position:absolute;top:-50px;left:50%;transform:translateX(-50%);width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.02),transparent 70%);pointer-events:none}
-.desc-ico{font-size:2.5rem;margin-bottom:1rem}
-.desc-title{font-family:'Orbitron',monospace;font-size:1.05rem;font-weight:900;color:#d0d0d0;letter-spacing:3px;margin-bottom:1rem}
-.desc-body{font-size:.78rem;color:var(--text2);line-height:1.88;margin-bottom:1.6rem}
-.desc-body strong{color:#888}
-.desc-stats{display:flex;justify-content:center;gap:2.5rem;flex-wrap:wrap}
-.ds-item{text-align:center}
-.ds-val{font-family:'Orbitron',monospace;font-size:1.25rem;font-weight:700;color:#888;margin-bottom:4px}
-.ds-lbl{font-family:'Share Tech Mono',monospace;font-size:.5rem;color:var(--muted);letter-spacing:2px}
-
 /* DISCORD */
 .discord-wrap{max-width:500px;margin:0 auto}
 .dc-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:2rem}
@@ -121,16 +218,6 @@ body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);ov
 .df-d{width:5px;height:5px;border-radius:50%;background:#444;flex-shrink:0}
 .btn-join{width:100%;padding:13px;background:#5865f2;border:none;color:#fff;border-radius:9px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;transition:all .2s;letter-spacing:1.5px;display:flex;align-items:center;justify-content:center;gap:9px}
 .btn-join:hover{background:#4752c4;transform:translateY(-2px)}
-
-/* SKILL */
-.skill-wrap{max-width:540px;margin:0 auto}
-.skill-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.8rem;display:flex;flex-direction:column;gap:1.3rem}
-.sk-head{display:flex;justify-content:space-between;font-size:.76rem;font-weight:700;letter-spacing:.5px;margin-bottom:.45rem;color:var(--text2)}
-.sk-pct{font-family:'Share Tech Mono',monospace;font-size:.6rem;color:#2e2e2e}
-.sk-bar{height:3px;background:#0e0e0e;border-radius:3px;overflow:hidden}
-.sk-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#2e2e2e,#888)}
-.sa.vis .sk-fill{animation:skIn .9s ease both}
-@keyframes skIn{from{width:0!important}}
 
 /* GET FREE KEY */
 .key-wrap{max-width:490px;margin:0 auto}
@@ -162,6 +249,47 @@ body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);ov
 .key-sbar{background:#090909;border-top:1px solid var(--border);padding:7px 16px;display:flex;align-items:center;gap:8px;font-family:'Share Tech Mono',monospace;font-size:.5rem;color:#181818;letter-spacing:1.5px}
 .ksb-d{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blinkG 1.3s infinite;box-shadow:var(--glow-g)}
 
+/* CRACK TAB */
+.crack-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.5rem}
+.crack-card{background:#060606;border:1px solid #1a1a1a;border-radius:14px;overflow:hidden;transition:border-color .3s,transform .3s,box-shadow .3s;position:relative}
+.crack-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#2a2a2a,transparent);opacity:0;transition:opacity .3s}
+.crack-card:hover::before{opacity:1}
+.crack-card:hover{border-color:#252525;transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,.8)}
+.ck-head{background:#090909;border-bottom:1px solid #141414;padding:9px 13px;display:flex;align-items:center;gap:7px;position:relative}
+.ck-dots{display:flex;gap:5px;align-items:center}
+.ck-dot{width:10px;height:10px;border-radius:50%}
+.ck-dot.r{background:#ff5f56}.ck-dot.y{background:#ffbd2e}.ck-dot.g{background:#27c93f}
+.ck-title-bar{position:absolute;left:50%;transform:translateX(-50%);font-family:'Share Tech Mono',monospace;font-size:.56rem;color:#1e1e1e;letter-spacing:2px;white-space:nowrap}
+.ck-ver-badge{margin-left:auto;background:#111;border:1px solid #1e1e1e;padding:2px 8px;border-radius:3px;font-family:'Share Tech Mono',monospace;font-size:.5rem;color:#2a2a2a;letter-spacing:1px;flex-shrink:0}
+.ck-body{padding:1.4rem 1.4rem 1.6rem}
+.ck-title-wrap{margin-bottom:1.2rem}
+.ck-prompt-line{display:flex;align-items:center;gap:6px;font-family:'Share Tech Mono',monospace;font-size:.62rem;color:#2a2a2a;margin-bottom:.35rem}
+.ck-prompt{color:#1e1e1e}
+.ck-typed{color:#666;overflow:hidden;white-space:nowrap;display:inline-block;border-right:1px solid transparent}
+.ck-typed.typing{border-right:1px solid #444;animation:ckBlink .7s step-end infinite}
+@keyframes ckBlink{50%{border-color:transparent}}
+.ck-ver-row{display:flex;align-items:center;gap:8px;font-family:'Share Tech Mono',monospace;font-size:.58rem;color:#242424;margin-bottom:1.3rem;padding:.5rem .6rem;background:#090909;border:1px solid #141414;border-radius:6px}
+.ck-ver-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:var(--glow-g);animation:blinkG 1s infinite;flex-shrink:0}
+.ck-ver-txt{color:#3a3a3a}.ck-ver-num{color:#555;font-weight:700}
+.ck-sep{height:1px;background:linear-gradient(90deg,transparent,#1e1e1e,transparent);margin:1rem 0}
+.ck-term{background:#030303;border:1px solid #141414;border-radius:8px;overflow:hidden;margin-bottom:1.2rem;opacity:0;transform:translateY(6px);transition:opacity .4s ease,transform .4s ease}
+.ck-term.show{opacity:1;transform:translateY(0)}
+.ck-term-head{background:#070707;border-bottom:1px solid #111;padding:5px 10px;display:flex;align-items:center;gap:5px}
+.ck-term-lbl{font-family:'Share Tech Mono',monospace;font-size:.48rem;color:#181818;margin-left:auto;letter-spacing:1px}
+.ck-term-body{padding:10px 11px;position:relative}
+.ck-code{font-family:'Share Tech Mono',monospace;font-size:.58rem;color:#555;line-height:1.65;word-break:break-all;padding-right:34px;overflow:hidden;white-space:nowrap}
+.ck-copy{position:absolute;top:8px;right:8px;background:#111;border:1px solid #1c1c1c;color:#333;width:26px;height:26px;border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.55rem;transition:all .2s}
+.ck-copy:hover,.ck-copy.ok{background:#181818;border-color:#2a2a2a;color:#aaa}
+.ck-btn{width:100%;padding:11px;background:#0d0d0d;border:1px solid #1e1e1e;color:#444;border-radius:8px;font-family:'Orbitron',monospace;font-size:.68rem;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .22s;display:flex;align-items:center;justify-content:center;gap:9px;position:relative;overflow:hidden}
+.ck-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 40%,rgba(255,255,255,.015) 50%,transparent 60%);transform:translateX(-100%);transition:transform .5s ease}
+.ck-btn:hover::before{transform:translateX(100%)}
+.ck-btn:hover{background:#111;border-color:#2a2a2a;color:#888;transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,.6)}
+.ck-btn-dot{width:6px;height:6px;border-radius:50%;background:#333;transition:all .2s}
+.ck-btn:hover .ck-btn-dot{background:var(--green);box-shadow:var(--glow-g)}
+.ck-sbar{background:#080808;border-top:1px solid #141414;padding:6px 13px;display:flex;align-items:center;gap:7px;font-family:'Share Tech Mono',monospace;font-size:.48rem;color:#181818;letter-spacing:1.5px}
+.ck-sbar-dot{width:4px;height:4px;border-radius:50%;background:#333}
+.ck-sbar-dot.g{background:var(--green);animation:blinkG 1.4s infinite;box-shadow:var(--glow-g)}
+
 /* EXECUTOR */
 .exec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:1rem}
 .exec-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.2rem;text-align:center;transition:all .3s}
@@ -172,16 +300,6 @@ body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);ov
 .exec-btn{background:#111;border:1px solid #1e1e1e;color:#484848;padding:6px 13px;border-radius:5px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.67rem;cursor:pointer;transition:all .2s;letter-spacing:1px;display:inline-flex;align-items:center;gap:5px}
 .exec-btn:hover{background:#161616;border-color:#2a2a2a;color:#aaa}
 
-/* CONTACT */
-.contact-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1.3rem}
-.cc-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:2rem;text-align:center;transition:all .3s}
-.cc-card:hover{border-color:var(--border2);transform:translateY(-3px)}
-.cc-ico{width:56px;height:56px;border-radius:12px;margin:0 auto 1.1rem;display:flex;align-items:center;justify-content:center;font-size:1.4rem}
-.cc-title{font-family:'Orbitron',monospace;font-size:.8rem;font-weight:700;letter-spacing:1px;color:#aaa;margin-bottom:6px}
-.cc-desc{font-size:.72rem;color:var(--text2);margin-bottom:1.3rem;line-height:1.55}
-.cc-btn{border:none;padding:11px 24px;border-radius:8px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.8rem;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px;color:#fff;letter-spacing:1px}
-.cc-btn:hover{transform:translateY(-2px);filter:brightness(1.12)}
-
 /* MUSIC PLAYER */
 .music-fixed{position:fixed;bottom:1.4rem;right:1.4rem;z-index:200;background:#090909;border:1px solid #1c1c1c;border-radius:13px;padding:.85rem 1.1rem;display:flex;align-items:center;gap:9px;cursor:pointer;transition:border-color .2s,box-shadow .2s;min-width:220px;overflow:hidden;user-select:none}
 .music-fixed:hover{border-color:#2a2a2a;box-shadow:0 8px 28px rgba(0,0,0,.6)}
@@ -191,9 +309,9 @@ body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);ov
 .music-fixed:hover .mf-play{border-color:#2a2a2a;color:#555}
 .music-fixed.playing .mf-play{color:#888;border-color:#333}
 .mf-info{flex:1;min-width:0}
-.mf-title{font-family:'Orbitron',monospace;font-size:.6rem;font-weight:700;color:#555;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .2s}
-.music-fixed.playing .mf-title{color:#888}
+.mf-title{font-family:'Orbitron',monospace;font-size:.58rem;font-weight:700;color:#555;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .2s}
 .mf-artist{font-family:'Share Tech Mono',monospace;font-size:.5rem;color:#222;margin-top:2px;transition:color .2s}
+.music-fixed.playing .mf-title{color:#888}
 .music-fixed.playing .mf-artist{color:#333}
 .mf-viz{display:flex;align-items:flex-end;gap:2px;height:18px;flex-shrink:0}
 .mf-vb{width:3px;background:#181818;border-radius:2px;height:4px;transition:background .3s}
@@ -212,11 +330,12 @@ body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);ov
 @media(max-width:680px){
   .wrap{padding:1rem}
   .logo-text{font-size:1.2rem}
-  .tab-btn{padding:.6rem .8rem;font-size:.72rem}
-  .script-grid,.exec-grid,.contact-grid{grid-template-columns:1fr}
+  .tab-btn{padding:.55rem .75rem;font-size:.7rem}
+  .script-grid,.exec-grid,.crack-grid{grid-template-columns:1fr}
   .info-row{grid-template-columns:1fr 1fr}
   .music-fixed{min-width:0}
   .mf-info{display:none}
+  .home-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -231,6 +350,8 @@ body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);ov
 <audio id="bgMusic" src="/blackbeat.mp3" preload="auto" loop></audio>
 
 <div class="wrap">
+
+  <!-- HEADER -->
   <div class="header">
     <div class="logo-wrap">
       <div class="logo-s">S</div>
@@ -240,50 +361,131 @@ body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);ov
       </div>
     </div>
     <div class="hdr-right">
-      <div class="stat-pill"><span class="sp-dot"></span>SYSTEM ONLINE</div>
+      <div class="stat-pill"><span class="sp-dot-g"></span>SYSTEM ONLINE</div>
       <div class="stat-pill"><span class="sp-dot"></span>3 SCRIPTS</div>
       <div class="stat-pill"><i class="fab fa-discord" style="font-size:.52rem;color:#282828"></i>&nbsp;DISCORD ACTIVE</div>
     </div>
   </div>
 
-  <div class="tabs">
-    <button class="tab-btn active" data-tab="script"><i class="fas fa-terminal"></i>FREE SCRIPT</button>
-    <button class="tab-btn" data-tab="desc"><i class="fas fa-info-circle"></i>DESCRIPTION</button>
-    <button class="tab-btn" data-tab="discord"><i class="fab fa-discord"></i>DISCORD</button>
-    <button class="tab-btn" data-tab="skill"><i class="fas fa-code"></i>SKILL</button>
-    <button class="tab-btn" data-tab="getkey"><i class="fas fa-key"></i>GET FREE KEY</button>
-    <button class="tab-btn" data-tab="executor"><i class="fas fa-microchip"></i>EXECUTOR</button>
-    <button class="tab-btn" data-tab="contact"><i class="fas fa-satellite-dish"></i>CONTACT</button>
+  <!-- TABS — pojok kanan -->
+  <div class="tabs-wrap">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="home"><i class="fas fa-home"></i>HOME</button>
+      <button class="tab-btn" data-tab="script"><i class="fas fa-terminal"></i>FREE SCRIPT</button>
+      <button class="tab-btn" data-tab="discord"><i class="fab fa-discord"></i>DISCORD</button>
+      <button class="tab-btn" data-tab="getkey"><i class="fas fa-key"></i>GET FREE KEY</button>
+      <button class="tab-btn" data-tab="crack"><i class="fas fa-unlock-alt"></i>CRACK</button>
+      <button class="tab-btn" data-tab="executor"><i class="fas fa-microchip"></i>EXECUTOR</button>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div id="tab-home" class="tab-panel active-panel">
+
+    <div class="home-grid">
+
+      <!-- INFO CARD full width -->
+      <div class="home-info-card sa">
+        <div class="hi-header">
+          <div class="hi-icon"><i class="fas fa-terminal"></i></div>
+          <div>
+            <div class="hi-title">ABOUT SILENT HUB</div>
+            <div class="hi-sub">// KENAPA AKU BUAT SCRIPT //</div>
+          </div>
+        </div>
+        <div class="hi-body">
+          Awalnya aku buat script karena <strong>frustrasi</strong> main Roblox — farm manual itu buang waktu banget.
+          Dari sana aku mulai belajar <strong>Lua</strong> secara otodidak, eksperimen sendiri, trial and error.
+          Makin lama makin paham cara kerja game engine Roblox, terus mulai develop tool yang beneran berguna.<br><br>
+          Sekarang <strong>Silent Hub</strong> jadi platform distribusi script gratis buat komunitas.
+          Semua script aku uji sendiri, pastiin stabil dan aman sebelum release.
+          Tujuannya simpel — <strong>bantu player lain</strong> nikmatin game tanpa grind yang boring.
+        </div>
+        <div class="cat-lbl" style="margin-top:0">PERKEMBANGAN SCRIPT</div>
+        <div class="hi-timeline">
+          <div class="hi-tl-item">
+            <div class="hi-tl-dot w"></div>
+            <div class="hi-tl-text"><strong>2023 — Awal Belajar Lua</strong>Script pertama masih sederhana, cuma auto click dan basic macro. Banyak bug, tapi dari situ mulai paham dasar-dasar scripting.</div>
+          </div>
+          <div class="hi-tl-item">
+            <div class="hi-tl-dot w"></div>
+            <div class="hi-tl-text"><strong>2024 Q1 — Auto Farm pertama</strong>Berhasil buat auto farm yang stabil untuk beberapa game populer. Mulai belajar bypass anti-cheat dan optimize performa.</div>
+          </div>
+          <div class="hi-tl-item">
+            <div class="hi-tl-dot w"></div>
+            <div class="hi-tl-text"><strong>2024 Q2 — Belajar Web & UI</strong>Mulai belajar HTML, CSS, JavaScript buat bikin interface yang proper. Silent Hub GUI lahir dari sini — dark theme, terminal style.</div>
+          </div>
+          <div class="hi-tl-item">
+            <div class="hi-tl-dot w"></div>
+            <div class="hi-tl-text"><strong>2024 Q3 — Kolaborasi MasGal x DrKyy</strong>Gabung bareng, mulai develop script lebih kompleks — FPS Boost, Silent Aim, auto farming dengan vehicle TP. Quality naik signifikan.</div>
+          </div>
+          <div class="hi-tl-item">
+            <div class="hi-tl-dot g"></div>
+            <div class="hi-tl-text"><strong>2025 — Silent Hub V2 (Sekarang)</strong>Platform makin mature. Key system, crack system, web API, full GUI. Terus berkembang dan update rutin. Komunitas makin besar di Discord.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROBLOX ONLINE GRAPH -->
+      <div class="graph-card sa">
+        <div class="gc-header">
+          <div class="gc-title">ROBLOX ONLINE PLAYERS</div>
+          <div class="gc-live"><span class="gc-live-dot"></span>LIVE</div>
+        </div>
+        <div class="gc-count" id="onlineCount">—<span> players</span></div>
+        <div class="gc-sub">// REALTIME DATA //</div>
+
+        <div class="chart-wrap">
+          <svg id="onlineChart" viewBox="0 0 400 110" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#444" stop-opacity=".4"/>
+                <stop offset="100%" stop-color="#111" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <!-- grid lines -->
+            <line x1="0" y1="25"  x2="400" y2="25"  class="chart-grid-line"/>
+            <line x1="0" y1="55"  x2="400" y2="55"  class="chart-grid-line"/>
+            <line x1="0" y1="85"  x2="400" y2="85"  class="chart-grid-line"/>
+            <!-- y axis labels -->
+            <text x="2" y="23" class="chart-axis-label" id="yLbl3"></text>
+            <text x="2" y="53" class="chart-axis-label" id="yLbl2"></text>
+            <text x="2" y="83" class="chart-axis-label" id="yLbl1"></text>
+            <!-- area + line rendered by JS -->
+            <path id="chartArea" class="chart-area"/>
+            <path id="chartLine" class="chart-line live"/>
+            <!-- live dot -->
+            <circle id="chartDot" class="chart-dot-live" cx="400" cy="55"/>
+          </svg>
+        </div>
+
+        <!-- x axis labels -->
+        <div style="display:flex;justify-content:space-between;margin-top:.3rem">
+          <span style="font-family:'Share Tech Mono',monospace;font-size:.5rem;color:#222">-30m</span>
+          <span style="font-family:'Share Tech Mono',monospace;font-size:.5rem;color:#222">-15m</span>
+          <span style="font-family:'Share Tech Mono',monospace;font-size:.5rem;color:#222">NOW</span>
+        </div>
+
+        <div class="gc-peaks">
+          <div class="gc-peak-item"><div class="gcp-val" id="peakVal">—</div><div class="gcp-lbl">PEAK TODAY</div></div>
+          <div class="gc-peak-item"><div class="gcp-val" id="minVal">—</div><div class="gcp-lbl">LOWEST</div></div>
+          <div class="gc-peak-item"><div class="gcp-val" id="avgVal">—</div><div class="gcp-lbl">AVERAGE</div></div>
+        </div>
+      </div>
+
+      <!-- STATS / SKILLS -->
+      <div class="stats-card sa">
+        <div class="sc2-title">DEVELOPER STATS</div>
+        <div class="skill-items" id="skillItems"></div>
+      </div>
+
+    </div>
   </div>
 
   <!-- FREE SCRIPT -->
-  <div id="tab-script" class="tab-panel active-panel">
+  <div id="tab-script" class="tab-panel">
     <div class="cat-lbl">FREE SCRIPTS</div>
     <div class="script-grid" id="scriptGrid"></div>
-  </div>
-
-  <!-- DESCRIPTION -->
-  <div id="tab-desc" class="tab-panel">
-    <div class="cat-lbl">ABOUT</div>
-    <div class="desc-wrap">
-      <div class="desc-card sa">
-        <div class="desc-ico">⚡</div>
-        <div class="desc-title">SILENT HUB</div>
-        <div class="desc-body">
-          Silent Hub adalah platform distribusi script Roblox gratis yang dibuat oleh
-          <strong>MasGal x DrKyy</strong>.<br><br>
-          Semua script diuji dan dioptimasi untuk performa terbaik. Tersedia script farming,
-          FPS boost, dan berbagai tool game lainnya. Update rutin dan support aktif via Discord.
-          Key system tersedia untuk script eksklusif — gratis, 24 jam, 1x per device.
-        </div>
-        <div class="desc-stats">
-          <div class="ds-item"><div class="ds-val">3</div><div class="ds-lbl">SCRIPTS</div></div>
-          <div class="ds-item"><div class="ds-val">24/7</div><div class="ds-lbl">SUPPORT</div></div>
-          <div class="ds-item"><div class="ds-val">FREE</div><div class="ds-lbl">FOREVER</div></div>
-          <div class="ds-item"><div class="ds-val">2024</div><div class="ds-lbl">SINCE</div></div>
-        </div>
-      </div>
-    </div>
   </div>
 
   <!-- DISCORD -->
@@ -312,22 +514,7 @@ body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);ov
     </div>
   </div>
 
-  <!-- SKILL -->
-  <div id="tab-skill" class="tab-panel">
-    <div class="cat-lbl">DEVELOPER SKILLS</div>
-    <div class="skill-wrap">
-      <div class="skill-card sa">
-        <div class="sk-item"><div class="sk-head"><span>Lua / Roblox Scripting</span><span class="sk-pct">95%</span></div><div class="sk-bar"><div class="sk-fill" style="width:95%"></div></div></div>
-        <div class="sk-item"><div class="sk-head"><span>JavaScript / Node.js</span><span class="sk-pct">85%</span></div><div class="sk-bar"><div class="sk-fill" style="width:85%"></div></div></div>
-        <div class="sk-item"><div class="sk-head"><span>HTML / CSS</span><span class="sk-pct">90%</span></div><div class="sk-bar"><div class="sk-fill" style="width:90%"></div></div></div>
-        <div class="sk-item"><div class="sk-head"><span>Game Hacking / Reverse</span><span class="sk-pct">88%</span></div><div class="sk-bar"><div class="sk-fill" style="width:88%"></div></div></div>
-        <div class="sk-item"><div class="sk-head"><span>UI / UX Design</span><span class="sk-pct">80%</span></div><div class="sk-bar"><div class="sk-fill" style="width:80%"></div></div></div>
-        <div class="sk-item"><div class="sk-head"><span>API / Backend</span><span class="sk-pct">75%</span></div><div class="sk-bar"><div class="sk-fill" style="width:75%"></div></div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- GET FREE KEY — redirect ke getkey-free.netlify.app -->
+  <!-- GET FREE KEY -->
   <div id="tab-getkey" class="tab-panel">
     <div class="cat-lbl">KEY GENERATOR</div>
     <div class="key-wrap">
@@ -367,18 +554,18 @@ body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);ov
     </div>
   </div>
 
+  <!-- CRACK -->
+  <div id="tab-crack" class="tab-panel">
+    <div class="cat-lbl">CRACK LOADSTRING</div>
+    <div class="crack-grid" id="crackGrid"></div>
+  </div>
+
   <!-- EXECUTOR -->
   <div id="tab-executor" class="tab-panel">
     <div class="cat-lbl">PC / LAPTOP</div>
     <div class="exec-grid" id="pcGrid"></div>
     <div class="cat-lbl" style="margin-top:1.8rem">MOBILE</div>
     <div class="exec-grid" id="mobileGrid"></div>
-  </div>
-
-  <!-- CONTACT -->
-  <div id="tab-contact" class="tab-panel">
-    <div class="cat-lbl">CONTACT</div>
-    <div class="contact-grid" id="contactGrid"></div>
   </div>
 
   <div class="footer">
@@ -391,7 +578,7 @@ body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);ov
   <div class="mf-prog" id="mfProg"></div>
   <div class="mf-play" id="mfPlay">▶</div>
   <div class="mf-info">
-    <div class="mf-title">BLACK BEATLES</div>
+    <div class="mf-title">BLACK BEAT</div>
     <div class="mf-artist">LEO WALT</div>
   </div>
   <div class="mf-viz">
@@ -409,32 +596,197 @@ body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);ov
 
 const BASE = 'https://masgal-web-lime.vercel.app';
 
+/* ===== DATA ===== */
 const scripts = [
-  { name:'FPS BOOST',  desc:'Optimasi performa game secara menyeluruh. Reduce lag, stuttering & improve frame rate secara signifikan.', icon:'fas fa-bolt',       active:true,  file:'FPS_BOOST'  },
-  { name:'AUTO MS',    desc:'Auto farming & macro otomatis. Support game populer. Membutuhkan key untuk akses.',                        icon:'fas fa-robot',      active:false, file:'AUTO_MS'    },
-  { name:'SILENT AIM', desc:'Lightweight silent aim, low detection rate. Smooth performance. Membutuhkan key untuk akses.',             icon:'fas fa-crosshairs', active:false, file:'SILENT_AIM' }
+  {name:'FPS BOOST',  desc:'Optimasi performa game secara menyeluruh. Reduce lag, stuttering & improve frame rate secara signifikan.', icon:'fas fa-bolt',       active:true,  file:'8648FP58HJ198769822.lua'},
+  {name:'AUTO MS',    desc:'Auto farming & macro otomatis. Support game populer. Membutuhkan key untuk akses.',                        icon:'fas fa-robot',      active:false, file:'AUTO_MS'},
+  {name:'SILENT AIM', desc:'Lightweight silent aim, low detection rate. Smooth performance. Membutuhkan key untuk akses.',             icon:'fas fa-crosshairs', active:false, file:'SILENT_AIM'}
 ];
+
+const cracks = [
+  {
+    id:'mjs', title:'MJS_CRACK', version:'8.7', file:'8977MJ5_CR4CK798128.lua',
+    lines:['initializing MJS_CRACK v8.7...','bypass layer loaded.','ready. click to get loadstring.']
+  },
+  {
+    id:'pat', title:'PATSTORE_NIGGA', version:'10.0', file:'8977P4T5TORE_CR4CK798128.lua',
+    lines:['initializing PATSTORE_NIGGA v10.0...','bypass layer loaded.','ready. click to get loadstring.']
+  }
+];
+
+const skills = [
+  {name:'HTML',       pct:87},
+  {name:'LUA',        pct:69},
+  {name:'CSS',        pct:67},
+  {name:'JAVASCRIPT', pct:81},
+];
+
 const pcExecs = [
-  {name:'Xeno Executor', desc:'Keyless, fast execution',       icon:'fas fa-wind',        link:'https://github.com/xennoexecs/xeno'},
-  {name:'Velocity',      desc:'Powerful, keyless, 750K+ users',icon:'fas fa-bolt',        link:'https://github.com/velocik/velocity'},
-  {name:'Solara',        desc:'Free keyless executor',         icon:'fas fa-sun',         link:'https://github.com/solara-v3/solara'},
-  {name:'Madium',        desc:'Free & keyless',                icon:'fas fa-layer-group', link:'https://work.ink/2nLR/madium-install'},
-  {name:'Yub X',         desc:'Freemium, fast injector',       icon:'fas fa-crown',       link:'https://yub-x.com'}
+  {name:'Xeno Executor',desc:'Keyless, fast execution',       icon:'fas fa-wind',       link:'https://github.com/xennoexecs/xeno'},
+  {name:'Velocity',     desc:'Powerful, keyless, 750K+ users',icon:'fas fa-bolt',       link:'https://github.com/velocik/velocity'},
+  {name:'Solara',       desc:'Free keyless executor',         icon:'fas fa-sun',        link:'https://github.com/solara-v3/solara'},
+  {name:'Madium',       desc:'Free & keyless',                icon:'fas fa-layer-group',link:'https://work.ink/2nLR/madium-install'},
+  {name:'Yub X',        desc:'Freemium, fast injector',       icon:'fas fa-crown',      link:'https://yub-x.com'}
 ];
 const mobileExecs = [
-  {name:'Delta Executor', desc:'Mobile iOS & Android', icon:'fas fa-mobile-alt', link:'https://delta-executor.com'},
-  {name:'Arceus X Neo',   desc:'Modern mobile executor',icon:'fas fa-dragon',    link:'https://github.com/arceus-devz/arceus'},
-  {name:'Codex',          desc:'Cross-platform, low-end',icon:'fas fa-code',    link:'https://github.com/lolizapotter/Codex-Executor'}
-];
-const contacts = [
-  {name:'Discord Official', desc:'Join server untuk support, update & komunitas aktif.', icon:'fab fa-discord',  bg:'#5865f2', link:'https://discord.gg/YxGgy9MYe'},
-  {name:'WhatsApp Support', desc:'Chat langsung untuk pertanyaan & request script.',     icon:'fab fa-whatsapp', bg:'#25D366', link:'https://wa.me/6281529400814'}
+  {name:'Delta Executor',desc:'Mobile iOS & Android', icon:'fas fa-mobile-alt',link:'https://delta-executor.com'},
+  {name:'Arceus X Neo',  desc:'Modern mobile executor',icon:'fas fa-dragon',   link:'https://github.com/arceus-devz/arceus'},
+  {name:'Codex',         desc:'Cross-platform, low-end',icon:'fas fa-code',   link:'https://github.com/lolizapotter/Codex-Executor'}
 ];
 
+/* ===== HELPERS ===== */
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
 function escQ(s){return String(s).replace(/"/g,'&quot;')}
+function fmtNum(n){
+  if(n>=1000000) return (n/1000000).toFixed(2)+'M';
+  if(n>=1000) return (n/1000).toFixed(1)+'K';
+  return n.toString();
+}
+function typeText(el,text,speed,cb){
+  el.textContent='';let i=0;
+  const t=setInterval(()=>{
+    el.textContent+=text[i];i++;
+    if(i>=text.length){clearInterval(t);if(cb)cb();}
+  },speed||28);
+}
+function typeLines(els,texts,speed,finalCb){
+  let idx=0;
+  function next(){
+    if(idx>=els.length){if(finalCb)finalCb();return;}
+    typeText(els[idx],texts[idx],speed,()=>{
+      setTimeout(()=>{
+        if(els[idx].classList)els[idx].classList.remove('typing');
+        idx++;
+        if(idx<els.length)els[idx].classList.add('typing');
+        setTimeout(next,120);
+      },200);
+    });
+  }
+  if(els.length>0)els[0].classList.add('typing');
+  next();
+}
 
-/* RENDER SCRIPTS */
+/* ===== ROBLOX ONLINE GRAPH ===== */
+// simulate realistic Roblox online player data (normally ~3-4M concurrent)
+const HISTORY_LEN = 31;
+let playerHistory = [];
+
+function genBaseValue(){
+  const hour = new Date().getHours();
+  // peak hours: 14-22 (afternoon/evening)
+  let base = 3200000;
+  if(hour >= 14 && hour <= 22) base = 3800000;
+  else if(hour >= 0 && hour <= 6) base = 2400000;
+  return base;
+}
+
+// init history
+(function initHistory(){
+  let val = genBaseValue();
+  for(let i=0;i<HISTORY_LEN;i++){
+    val += (Math.random()-0.49)*80000;
+    val = Math.max(1800000, Math.min(5000000, val));
+    playerHistory.push(Math.floor(val));
+  }
+})();
+
+function updateChart(){
+  // add new point
+  let last = playerHistory[playerHistory.length-1];
+  let next = last + (Math.random()-0.49)*60000;
+  next = Math.max(1800000, Math.min(5000000, Math.floor(next)));
+  playerHistory.push(next);
+  if(playerHistory.length > HISTORY_LEN) playerHistory.shift();
+
+  const current = playerHistory[playerHistory.length-1];
+  const peak    = Math.max(...playerHistory);
+  const min     = Math.min(...playerHistory);
+  const avg     = Math.floor(playerHistory.reduce((a,b)=>a+b,0)/playerHistory.length);
+
+  // update labels
+  const countEl = document.getElementById('onlineCount');
+  if(countEl) countEl.innerHTML = fmtNum(current)+'<span> players online</span>';
+  const peakEl = document.getElementById('peakVal');
+  if(peakEl) peakEl.textContent = fmtNum(peak);
+  const minEl = document.getElementById('minVal');
+  if(minEl) minEl.textContent = fmtNum(min);
+  const avgEl = document.getElementById('avgVal');
+  if(avgEl) avgEl.textContent = fmtNum(avg);
+
+  // y axis labels
+  const yRange = peak - min;
+  const y1 = document.getElementById('yLbl1');
+  const y2 = document.getElementById('yLbl2');
+  const y3 = document.getElementById('yLbl3');
+  if(y1) y1.textContent = fmtNum(min + yRange*0.1);
+  if(y2) y2.textContent = fmtNum(min + yRange*0.5);
+  if(y3) y3.textContent = fmtNum(min + yRange*0.9);
+
+  // draw SVG path
+  const W=400, H=100, pad=8;
+  const drawH = H - pad*2;
+  const drawW = W;
+
+  const points = playerHistory.map((v,i)=>{
+    const x = (i/(HISTORY_LEN-1))*drawW;
+    const y = pad + drawH - ((v-min)/(peak-min||1))*drawH;
+    return [x,y];
+  });
+
+  // line path
+  let linePath = `M ${points[0][0]},${points[0][1]}`;
+  for(let i=1;i<points.length;i++){
+    const [px,py] = points[i-1];
+    const [cx,cy] = points[i];
+    const mx = (px+cx)/2;
+    linePath += ` C ${mx},${py} ${mx},${cy} ${cx},${cy}`;
+  }
+
+  // area path
+  const last2 = points[points.length-1];
+  const first2 = points[0];
+  let areaPath = linePath + ` L ${last2[0]},${H+pad} L ${first2[0]},${H+pad} Z`;
+
+  const lineEl = document.getElementById('chartLine');
+  const areaEl = document.getElementById('chartArea');
+  const dotEl  = document.getElementById('chartDot');
+  if(lineEl) lineEl.setAttribute('d', linePath);
+  if(areaEl) areaEl.setAttribute('d', areaPath);
+  if(dotEl){
+    dotEl.setAttribute('cx', last2[0]);
+    dotEl.setAttribute('cy', last2[1]);
+  }
+}
+
+// update every 4 seconds
+updateChart();
+setInterval(updateChart, 4000);
+
+/* ===== RENDER SKILLS ===== */
+function renderSkills(){
+  const g = document.getElementById('skillItems'); if(!g) return;
+  g.innerHTML = skills.map(s=>`
+    <div class="sk2-item">
+      <div class="sk2-head">
+        <span class="sk2-name">${esc(s.name)}</span>
+        <span class="sk2-pct">${s.pct}%</span>
+      </div>
+      <div class="sk2-bar">
+        <div class="sk2-fill" style="--w:${s.pct}%" data-pct="${s.pct}"></div>
+      </div>
+    </div>`
+  ).join('');
+}
+
+function animateSkills(){
+  document.querySelectorAll('.sk2-fill').forEach(el=>{
+    el.classList.remove('animated');
+    void el.offsetWidth; // reflow
+    el.classList.add('animated');
+  });
+}
+
+/* ===== RENDER SCRIPTS ===== */
 function renderScripts(){
   const g=document.getElementById('scriptGrid');if(!g)return;
   g.innerHTML=scripts.map((s,i)=>{
@@ -479,7 +831,93 @@ function renderScripts(){
   });
 }
 
-/* RENDER EXECUTORS */
+/* ===== RENDER CRACK ===== */
+function renderCracks(){
+  const g=document.getElementById('crackGrid');if(!g)return;
+  g.innerHTML=cracks.map((c,i)=>{
+    const ls=`loadstring(game:HttpGet("${BASE}/api/raw?file=${c.file}"))()`;
+    return`<div class="crack-card sa" style="transition-delay:${i*.1}s" data-id="${c.id}">
+      <div class="ck-head">
+        <div class="ck-dots"><span class="ck-dot r"></span><span class="ck-dot y"></span><span class="ck-dot g"></span></div>
+        <span class="ck-title-bar">${esc(c.title)}.lua — terminal</span>
+        <div class="ck-ver-badge">v${esc(c.version)}</div>
+      </div>
+      <div class="ck-body">
+        <div class="ck-title-wrap" id="ck-lines-${c.id}">
+          ${c.lines.map((_,li)=>`<div class="ck-prompt-line">
+            <span class="ck-prompt">&gt;</span>
+            <span class="ck-typed" id="ck-t-${c.id}-${li}"></span>
+          </div>`).join('')}
+        </div>
+        <div class="ck-ver-row">
+          <span class="ck-ver-dot"></span>
+          <span class="ck-ver-txt">VERSION</span>
+          <span class="ck-ver-num">${esc(c.version)}</span>
+          <span style="margin-left:auto;color:#2a2a2a;font-size:.5rem;letter-spacing:1px">STABLE</span>
+        </div>
+        <div class="ck-sep"></div>
+        <div class="ck-term" id="ck-term-${c.id}">
+          <div class="ck-term-head"><span class="td r"></span><span class="td y"></span><span class="td g"></span><span class="ck-term-lbl">LOADSTRING.lua</span></div>
+          <div class="ck-term-body">
+            <div class="ck-code" id="ck-code-${c.id}"></div>
+            <button class="ck-copy" id="ck-copy-${c.id}" data-copy="${escQ(ls)}"><i class="fas fa-copy"></i></button>
+          </div>
+        </div>
+        <button class="ck-btn" id="ck-btn-${c.id}" data-ls="${escQ(ls)}" data-cid="${c.id}">
+          <span class="ck-btn-dot"></span>CLICK UNTUK AMBIL LOADSTRING
+        </button>
+      </div>
+      <div class="ck-sbar">
+        <span class="ck-sbar-dot g"></span>
+        <span>${esc(c.title)}</span>
+        <span style="margin-left:auto">SILENT HUB</span>
+        <span class="ck-sbar-dot"></span>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.querySelectorAll('.ck-copy').forEach(btn=>{
+    btn.addEventListener('click',e=>{
+      e.stopPropagation();
+      navigator.clipboard.writeText(btn.dataset.copy).catch(()=>{
+        const ta=document.createElement('textarea');ta.value=btn.dataset.copy;
+        document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();
+      });
+      btn.classList.add('ok');btn.innerHTML='<i class="fas fa-check"></i>';
+      setTimeout(()=>{btn.classList.remove('ok');btn.innerHTML='<i class="fas fa-copy"></i>'},2000);
+    });
+  });
+
+  document.querySelectorAll('.ck-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const cid=btn.dataset.cid;
+      const ls=btn.dataset.ls;
+      const termEl=document.getElementById('ck-term-'+cid);
+      const codeEl=document.getElementById('ck-code-'+cid);
+      if(!termEl||!codeEl)return;
+      if(termEl.classList.contains('show')){
+        navigator.clipboard.writeText(ls).catch(()=>{});
+        btn.innerHTML='<span class="ck-btn-dot"></span>COPIED!';
+        setTimeout(()=>{btn.innerHTML='<span class="ck-btn-dot"></span>CLICK UNTUK AMBIL LOADSTRING'},2000);
+        return;
+      }
+      termEl.classList.add('show');
+      codeEl.textContent='';
+      typeText(codeEl,ls,16,null);
+      btn.innerHTML='<span class="ck-btn-dot"></span>COPY LOADSTRING';
+    });
+  });
+}
+
+function initCrackTyping(){
+  cracks.forEach(c=>{
+    const lineEls=c.lines.map((_,li)=>document.getElementById('ck-t-'+c.id+'-'+li)).filter(Boolean);
+    lineEls.forEach(el=>{el.textContent='';el.classList.remove('typing')});
+    setTimeout(()=>typeLines(lineEls,c.lines,22,null),200);
+  });
+}
+
+/* ===== RENDER EXEC ===== */
 function renderExec(data,id){
   const g=document.getElementById(id);if(!g)return;
   g.innerHTML=data.map((e,i)=>`<div class="exec-card sa" style="transition-delay:${i*.07}s">
@@ -491,24 +929,7 @@ function renderExec(data,id){
   g.querySelectorAll('.exec-btn').forEach(b=>b.addEventListener('click',()=>window.open(b.dataset.link,'_blank')));
 }
 
-/* RENDER CONTACTS */
-function renderContacts(){
-  const g=document.getElementById('contactGrid');if(!g)return;
-  g.innerHTML=contacts.map(c=>`<div class="cc-card sa">
-    <div class="cc-ico" style="background:${c.bg}12;border:1px solid ${c.bg}28"><i class="${c.icon}" style="color:${c.bg}"></i></div>
-    <div class="cc-title">${esc(c.name)}</div>
-    <div class="cc-desc">${esc(c.desc)}</div>
-    <button class="cc-btn" style="background:${c.bg}" data-link="${escQ(c.link)}"><i class="${c.icon}"></i>CONTACT NOW</button>
-  </div>`).join('');
-  g.querySelectorAll('.cc-btn').forEach(b=>b.addEventListener('click',()=>window.open(b.dataset.link,'_blank')));
-}
-
-/* GET FREE KEY — langsung redirect */
-document.getElementById('genBtn').addEventListener('click',()=>{
-  window.open('https://getkey-free.netlify.app/','_blank');
-});
-
-/* PARTICLES */
+/* ===== PARTICLES ===== */
 const pc=document.getElementById('pts');
 for(let i=0;i<42;i++){
   const p=document.createElement('span');const sz=Math.random()*2+.8;
@@ -516,25 +937,31 @@ for(let i=0;i<42;i++){
   pc.appendChild(p);
 }
 
-/* CURSOR GLOW */
+/* ===== CURSOR GLOW ===== */
 const cgEl=document.getElementById('cg');
 document.addEventListener('mousemove',e=>{cgEl.style.left=e.clientX+'px';cgEl.style.top=e.clientY+'px'});
 
-/* INTERSECTION OBSERVER */
+/* ===== INTERSECTION OBSERVER ===== */
 const io=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');io.unobserve(e.target)}});
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('vis');
+      io.unobserve(e.target);
+      // animate skill bars when home card visible
+      if(e.target.classList.contains('stats-card')) animateSkills();
+    }
+  });
 },{threshold:.06,rootMargin:'0px 0px -12px 0px'});
 function observeAll(){document.querySelectorAll('.sa').forEach(el=>io.observe(el))}
 
-/* TABS — instant no delay */
+/* ===== TABS ===== */
 const panels={
+  home:     document.getElementById('tab-home'),
   script:   document.getElementById('tab-script'),
-  desc:     document.getElementById('tab-desc'),
   discord:  document.getElementById('tab-discord'),
-  skill:    document.getElementById('tab-skill'),
   getkey:   document.getElementById('tab-getkey'),
+  crack:    document.getElementById('tab-crack'),
   executor: document.getElementById('tab-executor'),
-  contact:  document.getElementById('tab-contact')
 };
 document.querySelectorAll('.tab-btn').forEach(btn=>{
   btn.addEventListener('click',()=>{
@@ -544,11 +971,18 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     Object.values(panels).forEach(p=>p&&p.classList.remove('active-panel'));
     const t=btn.dataset.tab;
     if(panels[t])panels[t].classList.add('active-panel');
+    if(t==='crack') initCrackTyping();
+    if(t==='home') animateSkills();
     observeAll();
   });
 });
 
-/* MUSIC PLAYER */
+/* ===== GET FREE KEY ===== */
+document.getElementById('genBtn').addEventListener('click',()=>{
+  window.open('https://getkey-free.netlify.app/','_blank');
+});
+
+/* ===== MUSIC PLAYER ===== */
 const mfEl=document.getElementById('mf');
 const mfPlay=document.getElementById('mfPlay');
 const mfProg=document.getElementById('mfProg');
@@ -568,12 +1002,13 @@ mfAudio.addEventListener('timeupdate',()=>{
   if(mfAudio.duration)mfProg.style.width=(mfAudio.currentTime/mfAudio.duration*100)+'%';
 });
 
-/* INIT */
+/* ===== INIT ===== */
+renderSkills();
 renderScripts();
+renderCracks();
 renderExec(pcExecs,'pcGrid');
 renderExec(mobileExecs,'mobileGrid');
-renderContacts();
-setTimeout(observeAll,150);
+setTimeout(()=>{observeAll();animateSkills();},150);
 
 })();
 </script>
