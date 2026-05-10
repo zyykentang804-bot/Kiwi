@@ -46,9 +46,9 @@ body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);ov
 .sp-dot{width:5px;height:5px;border-radius:50%;background:#555;animation:blinkW 1.5s infinite}
 .sp-dot-g{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blinkG 1.2s infinite;box-shadow:var(--glow-g)}
 
-/* TABS — pojok kanan */
-.tabs-wrap{display:flex;justify-content:flex-end;margin-bottom:2rem;border-bottom:1px solid var(--border)}
-.tabs{display:flex;gap:0;flex-wrap:wrap;justify-content:flex-end}
+/* TABS — sekarang rata tengah */
+.tabs-wrap{display:flex;justify-content:center;margin-bottom:2rem;border-bottom:1px solid var(--border)}
+.tabs{display:flex;gap:0;flex-wrap:wrap;justify-content:center}
 .tab-btn{background:transparent;border:none;padding:.7rem 1.1rem;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.74rem;color:#282828;cursor:pointer;transition:color .15s,border-color .15s;letter-spacing:1.5px;border-bottom:2px solid transparent;display:flex;align-items:center;gap:6px}
 .tab-btn i{font-size:.65rem}
 .tab-btn:hover{color:#484848}
@@ -110,7 +110,7 @@ body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);ov
 .hi-tl-text{font-size:.72rem;color:var(--text2);line-height:1.5}
 .hi-tl-text strong{color:#888;display:block;font-size:.75rem;margin-bottom:2px}
 
-/* roblox online graph */
+/* graph card */
 .graph-card{
   background:var(--card);border:1px solid var(--border);border-radius:14px;
   padding:1.4rem;position:relative;overflow:hidden;
@@ -219,36 +219,6 @@ body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);ov
 .btn-join{width:100%;padding:13px;background:#5865f2;border:none;color:#fff;border-radius:9px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;transition:all .2s;letter-spacing:1.5px;display:flex;align-items:center;justify-content:center;gap:9px}
 .btn-join:hover{background:#4752c4;transform:translateY(-2px)}
 
-/* GET FREE KEY */
-.key-wrap{max-width:490px;margin:0 auto}
-.key-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.8)}
-.key-thead{background:#090909;border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:7px;position:relative}
-.key-tlbl{position:absolute;left:50%;transform:translateX(-50%);font-family:'Share Tech Mono',monospace;font-size:.54rem;color:#1c1c1c;letter-spacing:2px}
-.key-body{padding:1.8rem 1.6rem}
-.key-ico{text-align:center;font-size:2.3rem;margin-bottom:.8rem}
-.key-title{font-family:'Orbitron',monospace;font-size:.95rem;font-weight:900;color:#d0d0d0;text-align:center;letter-spacing:3px;margin-bottom:.4rem}
-.key-sub{font-size:.7rem;color:var(--text2);text-align:center;line-height:1.65;margin-bottom:1.4rem}
-.badge-row{display:flex;gap:.5rem;justify-content:center;margin-bottom:1.3rem;flex-wrap:wrap}
-.kbadge{font-family:'Share Tech Mono',monospace;font-size:.52rem;padding:4px 10px;border-radius:3px;letter-spacing:1px;display:flex;align-items:center;gap:5px}
-.kbadge.g{background:rgba(0,204,119,.05);border:1px solid rgba(0,204,119,.22);color:var(--green)}
-.kbadge.r{background:rgba(204,34,51,.05);border:1px solid rgba(204,34,51,.22);color:var(--red2)}
-.kb-d{width:5px;height:5px;border-radius:50%}
-.kbadge.g .kb-d{background:var(--green);animation:blinkG .9s infinite;box-shadow:var(--glow-g)}
-.kbadge.r .kb-d{background:var(--red2);animation:blinkR .9s infinite;box-shadow:var(--glow-r)}
-.info-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem;margin-bottom:1.3rem}
-.ic{background:#090909;border:1px solid var(--border);border-radius:8px;padding:.65rem;text-align:center}
-.ic-v{font-family:'Orbitron',monospace;font-size:.88rem;font-weight:700;color:#aaa;margin-bottom:3px}
-.ic-l{font-family:'Share Tech Mono',monospace;font-size:.48rem;color:var(--muted);letter-spacing:1px}
-.key-steps{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.3rem}
-.key-step{display:flex;align-items:flex-start;gap:10px;background:#090909;border:1px solid var(--border);border-radius:8px;padding:.75rem .9rem}
-.step-num{min-width:26px;height:26px;border-radius:5px;background:#111;border:1px solid #222;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:.6rem;font-weight:700;color:#555;flex-shrink:0}
-.step-txt{font-size:.72rem;color:var(--text2);line-height:1.5}
-.step-txt strong{color:#888;display:block;font-size:.76rem;margin-bottom:2px}
-.btn-gen{width:100%;padding:14px;background:#111;border:1px solid #222;color:#666;border-radius:9px;font-family:'Orbitron',monospace;font-size:.72rem;font-weight:700;letter-spacing:2px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px}
-.btn-gen:hover{background:#161616;border-color:#333;color:#aaa;transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,.5)}
-.key-sbar{background:#090909;border-top:1px solid var(--border);padding:7px 16px;display:flex;align-items:center;gap:8px;font-family:'Share Tech Mono',monospace;font-size:.5rem;color:#181818;letter-spacing:1.5px}
-.ksb-d{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blinkG 1.3s infinite;box-shadow:var(--glow-g)}
-
 /* CRACK TAB */
 .crack-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.5rem}
 .crack-card{background:#060606;border:1px solid #1a1a1a;border-radius:14px;overflow:hidden;transition:border-color .3s,transform .3s,box-shadow .3s;position:relative}
@@ -290,16 +260,6 @@ body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);ov
 .ck-sbar-dot{width:4px;height:4px;border-radius:50%;background:#333}
 .ck-sbar-dot.g{background:var(--green);animation:blinkG 1.4s infinite;box-shadow:var(--glow-g)}
 
-/* EXECUTOR */
-.exec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:1rem}
-.exec-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.2rem;text-align:center;transition:all .3s}
-.exec-card:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:0 10px 28px rgba(0,0,0,.6)}
-.exec-ico{width:46px;height:46px;border-radius:10px;background:#111;border:1px solid #1e1e1e;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:#484848;margin:0 auto 10px}
-.exec-name{font-family:'Orbitron',monospace;font-size:.63rem;font-weight:700;letter-spacing:1px;color:#888;margin-bottom:5px}
-.exec-desc{font-size:.6rem;color:var(--muted);margin-bottom:11px;line-height:1.4}
-.exec-btn{background:#111;border:1px solid #1e1e1e;color:#484848;padding:6px 13px;border-radius:5px;font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.67rem;cursor:pointer;transition:all .2s;letter-spacing:1px;display:inline-flex;align-items:center;gap:5px}
-.exec-btn:hover{background:#161616;border-color:#2a2a2a;color:#aaa}
-
 /* MUSIC PLAYER */
 .music-fixed{position:fixed;bottom:1.4rem;right:1.4rem;z-index:200;background:#090909;border:1px solid #1c1c1c;border-radius:13px;padding:.85rem 1.1rem;display:flex;align-items:center;gap:9px;cursor:pointer;transition:border-color .2s,box-shadow .2s;min-width:220px;overflow:hidden;user-select:none}
 .music-fixed:hover{border-color:#2a2a2a;box-shadow:0 8px 28px rgba(0,0,0,.6)}
@@ -331,11 +291,10 @@ body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);ov
   .wrap{padding:1rem}
   .logo-text{font-size:1.2rem}
   .tab-btn{padding:.55rem .75rem;font-size:.7rem}
-  .script-grid,.exec-grid,.crack-grid{grid-template-columns:1fr}
-  .info-row{grid-template-columns:1fr 1fr}
+  .script-grid,.crack-grid{grid-template-columns:1fr}
+  .home-grid{grid-template-columns:1fr}
   .music-fixed{min-width:0}
   .mf-info{display:none}
-  .home-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -367,23 +326,19 @@ body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);ov
     </div>
   </div>
 
-  <!-- TABS — pojok kanan -->
+  <!-- TABS — sekarang rata tengah (justify-content:center) -->
   <div class="tabs-wrap">
     <div class="tabs">
       <button class="tab-btn active" data-tab="home"><i class="fas fa-home"></i>HOME</button>
       <button class="tab-btn" data-tab="script"><i class="fas fa-terminal"></i>FREE SCRIPT</button>
       <button class="tab-btn" data-tab="discord"><i class="fab fa-discord"></i>DISCORD</button>
-      <button class="tab-btn" data-tab="getkey"><i class="fas fa-key"></i>GET FREE KEY</button>
       <button class="tab-btn" data-tab="crack"><i class="fas fa-unlock-alt"></i>CRACK</button>
-      <button class="tab-btn" data-tab="executor"><i class="fas fa-microchip"></i>EXECUTOR</button>
     </div>
   </div>
 
   <!-- HOME -->
   <div id="tab-home" class="tab-panel active-panel">
-
     <div class="home-grid">
-
       <!-- INFO CARD full width -->
       <div class="home-info-card sa">
         <div class="hi-header">
@@ -405,23 +360,19 @@ body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);ov
         <div class="hi-timeline">
           <div class="hi-tl-item">
             <div class="hi-tl-dot w"></div>
-            <div class="hi-tl-text"><strong>2023 — Awal Belajar Lua</strong>Script pertama masih sederhana, cuma auto click dan basic macro. Banyak bug, tapi dari situ mulai paham dasar-dasar scripting.</div>
+            <div class="hi-tl-text"><strong>2024 — Mulai dari Bot WhatsApp (JavaScript)</strong>Awalnya eksperimen bikin bot WhatsApp pake Node.js dan Baileys. Belajar dasar JavaScript, event handling, dan ngerjain automasi chat.</div>
           </div>
           <div class="hi-tl-item">
             <div class="hi-tl-dot w"></div>
-            <div class="hi-tl-text"><strong>2024 Q1 — Auto Farm pertama</strong>Berhasil buat auto farm yang stabil untuk beberapa game populer. Mulai belajar bypass anti-cheat dan optimize performa.</div>
+            <div class="hi-tl-text"><strong>2024 — Learn JavaScript Development</strong>Beralih ke pengembangan web, belajar HTML, CSS, JavaScript murni, dan mulai eksplor API serta scraping data.</div>
           </div>
           <div class="hi-tl-item">
             <div class="hi-tl-dot w"></div>
-            <div class="hi-tl-text"><strong>2024 Q2 — Belajar Web & UI</strong>Mulai belajar HTML, CSS, JavaScript buat bikin interface yang proper. Silent Hub GUI lahir dari sini — dark theme, terminal style.</div>
-          </div>
-          <div class="hi-tl-item">
-            <div class="hi-tl-dot w"></div>
-            <div class="hi-tl-text"><strong>2024 Q3 — Kolaborasi MasGal x DrKyy</strong>Gabung bareng, mulai develop script lebih kompleks — FPS Boost, Silent Aim, auto farming dengan vehicle TP. Quality naik signifikan.</div>
+            <div class="hi-tl-text"><strong>2025 — Bangun Web HTML Sendiri</strong>Desain dan develop website dari nol. Belajar layout modern, dark theme, grid, dan interaksi client‑side murni. Fundamen frontend makin kuat.</div>
           </div>
           <div class="hi-tl-item">
             <div class="hi-tl-dot g"></div>
-            <div class="hi-tl-text"><strong>2025 — Silent Hub V2 (Sekarang)</strong>Platform makin mature. Key system, crack system, web API, full GUI. Terus berkembang dan update rutin. Komunitas makin besar di Discord.</div>
+            <div class="hi-tl-text"><strong>2026 — Mulai Coba Lua (Roblox Script)</strong>Sangat susah! error dikit langsung fatal. Tapi karena kegigihan, akhirnya bisa bikin stable script. Dari sini lahir Silent Hub yang kamu lihat sekarang.</div>
           </div>
         </div>
       </div>
@@ -437,35 +388,19 @@ body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);ov
 
         <div class="chart-wrap">
           <svg id="onlineChart" viewBox="0 0 400 110" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#444" stop-opacity=".4"/>
-                <stop offset="100%" stop-color="#111" stop-opacity="0"/>
-              </linearGradient>
-            </defs>
-            <!-- grid lines -->
+            <defs><linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#444" stop-opacity=".4"/><stop offset="100%" stop-color="#111" stop-opacity="0"/></linearGradient></defs>
             <line x1="0" y1="25"  x2="400" y2="25"  class="chart-grid-line"/>
             <line x1="0" y1="55"  x2="400" y2="55"  class="chart-grid-line"/>
             <line x1="0" y1="85"  x2="400" y2="85"  class="chart-grid-line"/>
-            <!-- y axis labels -->
             <text x="2" y="23" class="chart-axis-label" id="yLbl3"></text>
             <text x="2" y="53" class="chart-axis-label" id="yLbl2"></text>
             <text x="2" y="83" class="chart-axis-label" id="yLbl1"></text>
-            <!-- area + line rendered by JS -->
             <path id="chartArea" class="chart-area"/>
             <path id="chartLine" class="chart-line live"/>
-            <!-- live dot -->
             <circle id="chartDot" class="chart-dot-live" cx="400" cy="55"/>
           </svg>
         </div>
-
-        <!-- x axis labels -->
-        <div style="display:flex;justify-content:space-between;margin-top:.3rem">
-          <span style="font-family:'Share Tech Mono',monospace;font-size:.5rem;color:#222">-30m</span>
-          <span style="font-family:'Share Tech Mono',monospace;font-size:.5rem;color:#222">-15m</span>
-          <span style="font-family:'Share Tech Mono',monospace;font-size:.5rem;color:#222">NOW</span>
-        </div>
-
+        <div style="display:flex;justify-content:space-between;margin-top:.3rem"><span style="font-family:'Share Tech Mono',monospace;font-size:.5rem;color:#222">-30m</span><span style="font-family:'Share Tech Mono',monospace;font-size:.5rem;color:#222">-15m</span><span style="font-family:'Share Tech Mono',monospace;font-size:.5rem;color:#222">NOW</span></div>
         <div class="gc-peaks">
           <div class="gc-peak-item"><div class="gcp-val" id="peakVal">—</div><div class="gcp-lbl">PEAK TODAY</div></div>
           <div class="gc-peak-item"><div class="gcp-val" id="minVal">—</div><div class="gcp-lbl">LOWEST</div></div>
@@ -478,7 +413,6 @@ body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);ov
         <div class="sc2-title">DEVELOPER STATS</div>
         <div class="skill-items" id="skillItems"></div>
       </div>
-
     </div>
   </div>
 
@@ -507,49 +441,7 @@ body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);ov
           <div class="dc-f"><span class="df-d"></span>Request script &amp; feedback</div>
           <div class="dc-f"><span class="df-d"></span>Early access untuk member aktif</div>
         </div>
-        <button class="btn-join" onclick="window.open('https://discord.gg/YxGgy9MYe','_blank')">
-          <i class="fab fa-discord"></i>JOIN DISCORD SERVER
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- GET FREE KEY -->
-  <div id="tab-getkey" class="tab-panel">
-    <div class="cat-lbl">KEY GENERATOR</div>
-    <div class="key-wrap">
-      <div class="key-card sa">
-        <div class="key-thead">
-          <span class="td r"></span><span class="td y"></span><span class="td g"></span>
-          <span class="key-tlbl">keygen.js — SILENT HUB</span>
-        </div>
-        <div class="key-body">
-          <div class="key-ico">🔑</div>
-          <div class="key-title">FREE KEY GENERATOR</div>
-          <div class="key-sub">Key valid 24 jam &bull; Gratis selamanya &bull; Instant access</div>
-          <div class="badge-row">
-            <div class="kbadge g"><span class="kb-d"></span>FREE TIER</div>
-            <div class="kbadge g"><span class="kb-d"></span>24H DURATION</div>
-            <div class="kbadge r"><span class="kb-d"></span>1X PER DEVICE</div>
-          </div>
-          <div class="info-row">
-            <div class="ic"><div class="ic-v">24H</div><div class="ic-l">DURATION</div></div>
-            <div class="ic"><div class="ic-v">FREE</div><div class="ic-l">NO PAYMENT</div></div>
-            <div class="ic"><div class="ic-v">∞</div><div class="ic-l">SCRIPTS</div></div>
-          </div>
-          <div class="key-steps">
-            <div class="key-step"><div class="step-num">01</div><div class="step-txt"><strong>Klik tombol di bawah</strong>Kamu akan diarahkan ke halaman key generator</div></div>
-            <div class="key-step"><div class="step-num">02</div><div class="step-txt"><strong>Selesaikan verifikasi</strong>Klik iklan atau tunggu timer selesai</div></div>
-            <div class="key-step"><div class="step-num">03</div><div class="step-txt"><strong>Copy key yang muncul</strong>Paste di script saat diminta executor</div></div>
-            <div class="key-step"><div class="step-num">04</div><div class="step-txt"><strong>Masuk ke Discord</strong>Untuk verifikasi &amp; support jika ada masalah</div></div>
-          </div>
-          <button class="btn-gen" id="genBtn"><span>🔑</span>GET FREE KEY</button>
-        </div>
-        <div class="key-sbar">
-          <span class="ksb-d"></span>
-          <span>SILENT HUB KEY SYSTEM</span>
-          <span style="margin-left:auto">v2.0</span>
-        </div>
+        <button class="btn-join" onclick="window.open('https://discord.gg/YxGgy9MYe','_blank')"><i class="fab fa-discord"></i>JOIN DISCORD SERVER</button>
       </div>
     </div>
   </div>
@@ -558,14 +450,6 @@ body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);ov
   <div id="tab-crack" class="tab-panel">
     <div class="cat-lbl">CRACK LOADSTRING</div>
     <div class="crack-grid" id="crackGrid"></div>
-  </div>
-
-  <!-- EXECUTOR -->
-  <div id="tab-executor" class="tab-panel">
-    <div class="cat-lbl">PC / LAPTOP</div>
-    <div class="exec-grid" id="pcGrid"></div>
-    <div class="cat-lbl" style="margin-top:1.8rem">MOBILE</div>
-    <div class="exec-grid" id="mobileGrid"></div>
   </div>
 
   <div class="footer">
@@ -581,35 +465,27 @@ body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);ov
     <div class="mf-title">BLACK BEAT</div>
     <div class="mf-artist">LEO WALT</div>
   </div>
-  <div class="mf-viz">
-    <div class="mf-vb"></div>
-    <div class="mf-vb" style="height:7px"></div>
-    <div class="mf-vb" style="height:5px"></div>
-    <div class="mf-vb" style="height:11px"></div>
-    <div class="mf-vb" style="height:4px"></div>
-    <div class="mf-vb" style="height:8px"></div>
-  </div>
+  <div class="mf-viz"><div class="mf-vb"></div><div class="mf-vb" style="height:7px"></div><div class="mf-vb" style="height:5px"></div><div class="mf-vb" style="height:11px"></div><div class="mf-vb" style="height:4px"></div><div class="mf-vb" style="height:8px"></div></div>
 </div>
 
 <script>
 (function(){
-
 const BASE = 'https://masgal-web-lime.vercel.app';
 
 /* ===== DATA ===== */
 const scripts = [
-  {name:'FPS BOOST',  desc:'Optimasi performa game secara menyeluruh. Reduce lag, stuttering & improve frame rate secara signifikan.', icon:'fas fa-bolt',       active:true,  file:'8648FP58HJ198769822.lua'},
+  {name:'FPS BOOST',  desc:'Optimasi performa game secara menyeluruh. Reduce lag, stuttering & improve frame rate secara signifikan.', icon:'fas fa-bolt',       active:true,  file:'8648FP58HJ198769822'},
   {name:'AUTO MS',    desc:'Auto farming & macro otomatis. Support game populer. Membutuhkan key untuk akses.',                        icon:'fas fa-robot',      active:false, file:'AUTO_MS'},
   {name:'SILENT AIM', desc:'Lightweight silent aim, low detection rate. Smooth performance. Membutuhkan key untuk akses.',             icon:'fas fa-crosshairs', active:false, file:'SILENT_AIM'}
 ];
 
 const cracks = [
   {
-    id:'mjs', title:'MJS_CRACK', version:'8.7', file:'8977MJ5_CR4CK798128.lua',
+    id:'mjs', title:'MJS_CRACK', version:'8.7', file:'8977MJ5_CR4CK798128',
     lines:['initializing MJS_CRACK v8.7...','bypass layer loaded.','ready. click to get loadstring.']
   },
   {
-    id:'pat', title:'PATSTORE_NIGGA', version:'10.0', file:'8977P4T5TORE_CR4CK798128.lua',
+    id:'pat', title:'PATSTORE_NIGGA', version:'10.0', file:'8977P4T5TORE_CR4CK798128',
     lines:['initializing PATSTORE_NIGGA v10.0...','bypass layer loaded.','ready. click to get loadstring.']
   }
 ];
@@ -619,19 +495,6 @@ const skills = [
   {name:'LUA',        pct:69},
   {name:'CSS',        pct:67},
   {name:'JAVASCRIPT', pct:81},
-];
-
-const pcExecs = [
-  {name:'Xeno Executor',desc:'Keyless, fast execution',       icon:'fas fa-wind',       link:'https://github.com/xennoexecs/xeno'},
-  {name:'Velocity',     desc:'Powerful, keyless, 750K+ users',icon:'fas fa-bolt',       link:'https://github.com/velocik/velocity'},
-  {name:'Solara',       desc:'Free keyless executor',         icon:'fas fa-sun',        link:'https://github.com/solara-v3/solara'},
-  {name:'Madium',       desc:'Free & keyless',                icon:'fas fa-layer-group',link:'https://work.ink/2nLR/madium-install'},
-  {name:'Yub X',        desc:'Freemium, fast injector',       icon:'fas fa-crown',      link:'https://yub-x.com'}
-];
-const mobileExecs = [
-  {name:'Delta Executor',desc:'Mobile iOS & Android', icon:'fas fa-mobile-alt',link:'https://delta-executor.com'},
-  {name:'Arceus X Neo',  desc:'Modern mobile executor',icon:'fas fa-dragon',   link:'https://github.com/arceus-devz/arceus'},
-  {name:'Codex',         desc:'Cross-platform, low-end',icon:'fas fa-code',   link:'https://github.com/lolizapotter/Codex-Executor'}
 ];
 
 /* ===== HELPERS ===== */
@@ -667,20 +530,17 @@ function typeLines(els,texts,speed,finalCb){
 }
 
 /* ===== ROBLOX ONLINE GRAPH ===== */
-// simulate realistic Roblox online player data (normally ~3-4M concurrent)
 const HISTORY_LEN = 31;
 let playerHistory = [];
 
 function genBaseValue(){
   const hour = new Date().getHours();
-  // peak hours: 14-22 (afternoon/evening)
   let base = 3200000;
   if(hour >= 14 && hour <= 22) base = 3800000;
   else if(hour >= 0 && hour <= 6) base = 2400000;
   return base;
 }
 
-// init history
 (function initHistory(){
   let val = genBaseValue();
   for(let i=0;i<HISTORY_LEN;i++){
@@ -691,7 +551,6 @@ function genBaseValue(){
 })();
 
 function updateChart(){
-  // add new point
   let last = playerHistory[playerHistory.length-1];
   let next = last + (Math.random()-0.49)*60000;
   next = Math.max(1800000, Math.min(5000000, Math.floor(next)));
@@ -703,7 +562,6 @@ function updateChart(){
   const min     = Math.min(...playerHistory);
   const avg     = Math.floor(playerHistory.reduce((a,b)=>a+b,0)/playerHistory.length);
 
-  // update labels
   const countEl = document.getElementById('onlineCount');
   if(countEl) countEl.innerHTML = fmtNum(current)+'<span> players online</span>';
   const peakEl = document.getElementById('peakVal');
@@ -713,7 +571,6 @@ function updateChart(){
   const avgEl = document.getElementById('avgVal');
   if(avgEl) avgEl.textContent = fmtNum(avg);
 
-  // y axis labels
   const yRange = peak - min;
   const y1 = document.getElementById('yLbl1');
   const y2 = document.getElementById('yLbl2');
@@ -722,18 +579,14 @@ function updateChart(){
   if(y2) y2.textContent = fmtNum(min + yRange*0.5);
   if(y3) y3.textContent = fmtNum(min + yRange*0.9);
 
-  // draw SVG path
   const W=400, H=100, pad=8;
   const drawH = H - pad*2;
   const drawW = W;
-
   const points = playerHistory.map((v,i)=>{
     const x = (i/(HISTORY_LEN-1))*drawW;
     const y = pad + drawH - ((v-min)/(peak-min||1))*drawH;
     return [x,y];
   });
-
-  // line path
   let linePath = `M ${points[0][0]},${points[0][1]}`;
   for(let i=1;i<points.length;i++){
     const [px,py] = points[i-1];
@@ -741,24 +594,17 @@ function updateChart(){
     const mx = (px+cx)/2;
     linePath += ` C ${mx},${py} ${mx},${cy} ${cx},${cy}`;
   }
-
-  // area path
   const last2 = points[points.length-1];
   const first2 = points[0];
   let areaPath = linePath + ` L ${last2[0]},${H+pad} L ${first2[0]},${H+pad} Z`;
-
   const lineEl = document.getElementById('chartLine');
   const areaEl = document.getElementById('chartArea');
   const dotEl  = document.getElementById('chartDot');
   if(lineEl) lineEl.setAttribute('d', linePath);
   if(areaEl) areaEl.setAttribute('d', areaPath);
-  if(dotEl){
-    dotEl.setAttribute('cx', last2[0]);
-    dotEl.setAttribute('cy', last2[1]);
-  }
+  if(dotEl){ dotEl.setAttribute('cx', last2[0]); dotEl.setAttribute('cy', last2[1]); }
 }
 
-// update every 4 seconds
 updateChart();
 setInterval(updateChart, 4000);
 
@@ -767,24 +613,12 @@ function renderSkills(){
   const g = document.getElementById('skillItems'); if(!g) return;
   g.innerHTML = skills.map(s=>`
     <div class="sk2-item">
-      <div class="sk2-head">
-        <span class="sk2-name">${esc(s.name)}</span>
-        <span class="sk2-pct">${s.pct}%</span>
-      </div>
-      <div class="sk2-bar">
-        <div class="sk2-fill" style="--w:${s.pct}%" data-pct="${s.pct}"></div>
-      </div>
+      <div class="sk2-head"><span class="sk2-name">${esc(s.name)}</span><span class="sk2-pct">${s.pct}%</span></div>
+      <div class="sk2-bar"><div class="sk2-fill" style="--w:${s.pct}%" data-pct="${s.pct}"></div></div>
     </div>`
   ).join('');
 }
-
-function animateSkills(){
-  document.querySelectorAll('.sk2-fill').forEach(el=>{
-    el.classList.remove('animated');
-    void el.offsetWidth; // reflow
-    el.classList.add('animated');
-  });
-}
+function animateSkills(){ document.querySelectorAll('.sk2-fill').forEach(el=>{ el.classList.remove('animated'); void el.offsetWidth; el.classList.add('animated'); }); }
 
 /* ===== RENDER SCRIPTS ===== */
 function renderScripts(){
@@ -801,15 +635,10 @@ function renderScripts(){
       </div>`:`
       <div class="term term-locked">
         <div class="term-head"><span class="td r"></span><span class="td y"></span><span class="td g"></span><span class="term-lbl">LOCKED.lua</span></div>
-        <div class="term-body">
-          <div class="term-code"><span class="t-prompt">&gt; </span>🔒 SCRIPT LOCKED — GET FREE KEY TO UNLOCK</div>
-        </div>
+        <div class="term-body"><div class="term-code"><span class="t-prompt">&gt; </span>🔒 SCRIPT LOCKED — GET VIA DISCORD</div></div>
       </div>`;
     return`<div class="script-card sa" style="transition-delay:${i*.09}s">
-      <div class="sc-head">
-        <div class="sc-icon"><i class="${s.icon}"></i></div>
-        <div class="badge ${s.active?'on':'off'}"><span class="bd"></span>${s.active?'ACTIVE':'INACTIVE'}</div>
-      </div>
+      <div class="sc-head"><div class="sc-icon"><i class="${s.icon}"></i></div><div class="badge ${s.active?'on':'off'}"><span class="bd"></span>${s.active?'ACTIVE':'INACTIVE'}</div></div>
       <div class="sc-name">${esc(s.name)}</div>
       <div class="sc-desc">${esc(s.desc)}</div>
       ${termBlock}
@@ -831,51 +660,26 @@ function renderScripts(){
   });
 }
 
-/* ===== RENDER CRACK ===== */
+/* ===== CRACK ===== */
 function renderCracks(){
   const g=document.getElementById('crackGrid');if(!g)return;
   g.innerHTML=cracks.map((c,i)=>{
     const ls=`loadstring(game:HttpGet("${BASE}/api/raw?file=${c.file}"))()`;
     return`<div class="crack-card sa" style="transition-delay:${i*.1}s" data-id="${c.id}">
-      <div class="ck-head">
-        <div class="ck-dots"><span class="ck-dot r"></span><span class="ck-dot y"></span><span class="ck-dot g"></span></div>
-        <span class="ck-title-bar">${esc(c.title)}.lua — terminal</span>
-        <div class="ck-ver-badge">v${esc(c.version)}</div>
-      </div>
+      <div class="ck-head"><div class="ck-dots"><span class="ck-dot r"></span><span class="ck-dot y"></span><span class="ck-dot g"></span></div><span class="ck-title-bar">${esc(c.title)}.lua — terminal</span><div class="ck-ver-badge">v${esc(c.version)}</div></div>
       <div class="ck-body">
-        <div class="ck-title-wrap" id="ck-lines-${c.id}">
-          ${c.lines.map((_,li)=>`<div class="ck-prompt-line">
-            <span class="ck-prompt">&gt;</span>
-            <span class="ck-typed" id="ck-t-${c.id}-${li}"></span>
-          </div>`).join('')}
-        </div>
-        <div class="ck-ver-row">
-          <span class="ck-ver-dot"></span>
-          <span class="ck-ver-txt">VERSION</span>
-          <span class="ck-ver-num">${esc(c.version)}</span>
-          <span style="margin-left:auto;color:#2a2a2a;font-size:.5rem;letter-spacing:1px">STABLE</span>
-        </div>
+        <div class="ck-title-wrap" id="ck-lines-${c.id}">${c.lines.map((_,li)=>`<div class="ck-prompt-line"><span class="ck-prompt">&gt;</span><span class="ck-typed" id="ck-t-${c.id}-${li}"></span></div>`).join('')}</div>
+        <div class="ck-ver-row"><span class="ck-ver-dot"></span><span class="ck-ver-txt">VERSION</span><span class="ck-ver-num">${esc(c.version)}</span><span style="margin-left:auto;color:#2a2a2a;font-size:.5rem;letter-spacing:1px">STABLE</span></div>
         <div class="ck-sep"></div>
         <div class="ck-term" id="ck-term-${c.id}">
           <div class="ck-term-head"><span class="td r"></span><span class="td y"></span><span class="td g"></span><span class="ck-term-lbl">LOADSTRING.lua</span></div>
-          <div class="ck-term-body">
-            <div class="ck-code" id="ck-code-${c.id}"></div>
-            <button class="ck-copy" id="ck-copy-${c.id}" data-copy="${escQ(ls)}"><i class="fas fa-copy"></i></button>
-          </div>
+          <div class="ck-term-body"><div class="ck-code" id="ck-code-${c.id}"></div><button class="ck-copy" id="ck-copy-${c.id}" data-copy="${escQ(ls)}"><i class="fas fa-copy"></i></button></div>
         </div>
-        <button class="ck-btn" id="ck-btn-${c.id}" data-ls="${escQ(ls)}" data-cid="${c.id}">
-          <span class="ck-btn-dot"></span>CLICK UNTUK AMBIL LOADSTRING
-        </button>
+        <button class="ck-btn" id="ck-btn-${c.id}" data-ls="${escQ(ls)}" data-cid="${c.id}"><span class="ck-btn-dot"></span>CLICK UNTUK AMBIL LOADSTRING</button>
       </div>
-      <div class="ck-sbar">
-        <span class="ck-sbar-dot g"></span>
-        <span>${esc(c.title)}</span>
-        <span style="margin-left:auto">SILENT HUB</span>
-        <span class="ck-sbar-dot"></span>
-      </div>
+      <div class="ck-sbar"><span class="ck-sbar-dot g"></span><span>${esc(c.title)}</span><span style="margin-left:auto">SILENT HUB</span><span class="ck-sbar-dot"></span></div>
     </div>`;
   }).join('');
-
   document.querySelectorAll('.ck-copy').forEach(btn=>{
     btn.addEventListener('click',e=>{
       e.stopPropagation();
@@ -887,7 +691,6 @@ function renderCracks(){
       setTimeout(()=>{btn.classList.remove('ok');btn.innerHTML='<i class="fas fa-copy"></i>'},2000);
     });
   });
-
   document.querySelectorAll('.ck-btn').forEach(btn=>{
     btn.addEventListener('click',()=>{
       const cid=btn.dataset.cid;
@@ -908,7 +711,6 @@ function renderCracks(){
     });
   });
 }
-
 function initCrackTyping(){
   cracks.forEach(c=>{
     const lineEls=c.lines.map((_,li)=>document.getElementById('ck-t-'+c.id+'-'+li)).filter(Boolean);
@@ -917,51 +719,33 @@ function initCrackTyping(){
   });
 }
 
-/* ===== RENDER EXEC ===== */
-function renderExec(data,id){
-  const g=document.getElementById(id);if(!g)return;
-  g.innerHTML=data.map((e,i)=>`<div class="exec-card sa" style="transition-delay:${i*.07}s">
-    <div class="exec-ico"><i class="${e.icon}"></i></div>
-    <div class="exec-name">${esc(e.name)}</div>
-    <div class="exec-desc">${esc(e.desc)}</div>
-    <button class="exec-btn" data-link="${escQ(e.link)}"><i class="fas fa-download"></i>DOWNLOAD</button>
-  </div>`).join('');
-  g.querySelectorAll('.exec-btn').forEach(b=>b.addEventListener('click',()=>window.open(b.dataset.link,'_blank')));
-}
-
-/* ===== PARTICLES ===== */
+/* ===== PARTICLES, CURSOR, OBSERVER, TABS, MUSIC ===== */
 const pc=document.getElementById('pts');
 for(let i=0;i<42;i++){
-  const p=document.createElement('span');const sz=Math.random()*2+.8;
+  const p=document.createElement('span');
+  const sz=Math.random()*2+.8;
   p.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;background:${Math.random()>.5?'#1c1c1c':'#161616'};animation-duration:${Math.random()*20+12}s;animation-delay:${Math.random()*14}s;`;
   pc.appendChild(p);
 }
-
-/* ===== CURSOR GLOW ===== */
 const cgEl=document.getElementById('cg');
 document.addEventListener('mousemove',e=>{cgEl.style.left=e.clientX+'px';cgEl.style.top=e.clientY+'px'});
 
-/* ===== INTERSECTION OBSERVER ===== */
 const io=new IntersectionObserver(entries=>{
   entries.forEach(e=>{
     if(e.isIntersecting){
       e.target.classList.add('vis');
       io.unobserve(e.target);
-      // animate skill bars when home card visible
       if(e.target.classList.contains('stats-card')) animateSkills();
     }
   });
 },{threshold:.06,rootMargin:'0px 0px -12px 0px'});
 function observeAll(){document.querySelectorAll('.sa').forEach(el=>io.observe(el))}
 
-/* ===== TABS ===== */
 const panels={
   home:     document.getElementById('tab-home'),
   script:   document.getElementById('tab-script'),
   discord:  document.getElementById('tab-discord'),
-  getkey:   document.getElementById('tab-getkey'),
   crack:    document.getElementById('tab-crack'),
-  executor: document.getElementById('tab-executor'),
 };
 document.querySelectorAll('.tab-btn').forEach(btn=>{
   btn.addEventListener('click',()=>{
@@ -977,12 +761,7 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
   });
 });
 
-/* ===== GET FREE KEY ===== */
-document.getElementById('genBtn').addEventListener('click',()=>{
-  window.open('https://getkey-free.netlify.app/','_blank');
-});
-
-/* ===== MUSIC PLAYER ===== */
+// music player
 const mfEl=document.getElementById('mf');
 const mfPlay=document.getElementById('mfPlay');
 const mfProg=document.getElementById('mfProg');
@@ -1002,14 +781,10 @@ mfAudio.addEventListener('timeupdate',()=>{
   if(mfAudio.duration)mfProg.style.width=(mfAudio.currentTime/mfAudio.duration*100)+'%';
 });
 
-/* ===== INIT ===== */
 renderSkills();
 renderScripts();
 renderCracks();
-renderExec(pcExecs,'pcGrid');
-renderExec(mobileExecs,'mobileGrid');
 setTimeout(()=>{observeAll();animateSkills();},150);
-
 })();
 </script>
 </body>
