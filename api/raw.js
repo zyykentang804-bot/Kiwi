@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-// ===== HTML: ENCRYPTED PAGE =====
+// ===== HTML: ENCRYPTED PAGE ===== (dengan teks lebih terang)
 function encryptedHtml(fileName) {
   return `<!DOCTYPE html>
 <html lang="en">
@@ -67,7 +67,8 @@ body::after{
 .dot.r{background:#ff5f56}.dot.y{background:#ffbd2e}.dot.g{background:#27c93f}
 .t-bar-title{
   position:absolute;left:50%;transform:translateX(-50%);
-  font-size:.58rem;color:#555;letter-spacing:2px;
+  font-size:.58rem;color:#aaa; /* lebih terang */
+  letter-spacing:2px;
 }
 
 .t-hero{
@@ -76,7 +77,8 @@ body::after{
 .t-404{
   font-family:'Orbitron',monospace;
   font-size:4.2rem;font-weight:900;
-  color:#2a2a2a;letter-spacing:8px;
+  color:#5a5a7a; /* lebih terang dari sebelumnya */
+  letter-spacing:8px;
   animation:flicker 5s infinite;line-height:1;
 }
 @keyframes flicker{
@@ -86,14 +88,15 @@ body::after{
 .t-404-sub{
   font-family:'Orbitron',monospace;
   font-size:.72rem;font-weight:700;
-  color:#555;letter-spacing:4px;margin-top:.5rem;
+  color:#aaa; /* lebih terang */
+  letter-spacing:4px;margin-top:.5rem;
   animation:fadeIn .6s .5s both;
 }
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
 .glitch-bar{
   height:1px;
-  background:linear-gradient(90deg,transparent,#3a3a3a,transparent);
+  background:linear-gradient(90deg,transparent,#5a5a5a,transparent);
   animation:glitchBar 4s infinite;opacity:.8;
 }
 @keyframes glitchBar{
@@ -116,31 +119,32 @@ body::after{
 .t-line:nth-child(5){animation-delay:3.8s}
 .t-line:nth-child(6){animation-delay:4.5s}
 
-.t-arrow{color:#444;flex-shrink:0}
+.t-arrow{color:#999;flex-shrink:0} /* lebih terang */
 .t-typed{
   display:inline-block;overflow:hidden;white-space:nowrap;
   border-right:1px solid transparent;
 }
-.t-line:nth-child(1) .t-typed{color:#666;animation:lineIn .15s .3s forwards,typ .8s .3s steps(40,end) both,blink .6s .3s step-end 4}
-.t-line:nth-child(2) .t-typed{color:#555;animation:lineIn .15s 1.2s forwards,typ .6s 1.2s steps(35,end) both,blink .6s 1.2s step-end 3}
-.t-line:nth-child(3) .t-typed{color:#666;animation:lineIn .15s 2.1s forwards,typ 1.0s 2.1s steps(45,end) both,blink .6s 2.1s step-end 4}
-.t-line:nth-child(4) .t-typed{color:#555;animation:lineIn .15s 3.0s forwards,typ .7s 3.0s steps(38,end) both,blink .6s 3.0s step-end 3}
-.t-line:nth-child(5) .t-typed{color:#444;animation:lineIn .15s 3.8s forwards,typ .5s 3.8s steps(30,end) both,blink .6s 3.8s step-end 2}
+/* semua teks di t-typed menjadi lebih terang */
+.t-line:nth-child(1) .t-typed{color:#ccc;animation:lineIn .15s .3s forwards,typ .8s .3s steps(40,end) both,blink .6s .3s step-end 4}
+.t-line:nth-child(2) .t-typed{color:#bbb;animation:lineIn .15s 1.2s forwards,typ .6s 1.2s steps(35,end) both,blink .6s 1.2s step-end 3}
+.t-line:nth-child(3) .t-typed{color:#ccc;animation:lineIn .15s 2.1s forwards,typ 1.0s 2.1s steps(45,end) both,blink .6s 2.1s step-end 4}
+.t-line:nth-child(4) .t-typed{color:#bbb;animation:lineIn .15s 3.0s forwards,typ .7s 3.0s steps(38,end) both,blink .6s 3.0s step-end 3}
+.t-line:nth-child(5) .t-typed{color:#aaa;animation:lineIn .15s 3.8s forwards,typ .5s 3.8s steps(30,end) both,blink .6s 3.8s step-end 2}
 .t-line:nth-child(6) .t-typed{
-  color:#5a5a5a;border-right:1px solid #666;
+  color:#ccc;border-right:1px solid #aaa;
   animation:lineIn .15s 4.5s forwards,typ .8s 4.5s steps(42,end) both,blink .7s 4.5s step-end infinite
 }
 @keyframes typ{from{width:0}to{width:100%}}
 @keyframes blink{50%{border-color:transparent}}
 
-/* green highlight on key lines */
-.t-line.hl .t-typed{color:var(--green2) !important}
-.t-line.hl .t-arrow{color:var(--green)}
+/* highlight line lebih terang */
+.t-line.hl .t-typed{color:#00ffaa !important; text-shadow:0 0 4px #00cc77;}
+.t-line.hl .t-arrow{color:#00ffaa !important;}
 
 .t-status{
   background:#080808;border-top:1px solid #1e1e1e;
   padding:8px 16px;display:flex;align-items:center;gap:8px;
-  font-size:.52rem;color:#555;letter-spacing:1.5px;
+  font-size:.52rem;color:#aaa;letter-spacing:1.5px;
 }
 .s-dot-g{
   width:5px;height:5px;border-radius:50%;
@@ -182,8 +186,8 @@ body::after{
     <div class="t-status">
       <span class="s-dot-g"></span>
       <span>ENCRYPTED</span>
-      <span style="margin-left:8px;color:#333">${fileName}.lua</span>
-      <span style="margin-left:auto;color:#333">SILENT HUB v2.0</span>
+      <span style="margin-left:8px;color:#888">${fileName}.lua</span>
+      <span style="margin-left:auto;color:#888">SILENT HUB v2.0</span>
     </div>
 
   </div>
@@ -202,7 +206,7 @@ for(let i=0;i<38;i++){
 </html>`;
 }
 
-// ===== HTML: NOT FOUND PAGE =====
+// ===== HTML: NOT FOUND PAGE ===== (dengan teks lebih terang)
 function notFoundHtml(fileName) {
   return `<!DOCTYPE html>
 <html lang="en">
@@ -234,15 +238,15 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
 .t-bar{background:#0e0e0e;border-bottom:1px solid #1e1e1e;padding:10px 14px;display:flex;align-items:center;gap:7px;position:relative}
 .dot{width:11px;height:11px;border-radius:50%}
 .dot.r{background:#ff5f56}.dot.y{background:#ffbd2e}.dot.g{background:#27c93f}
-.t-bar-title{position:absolute;left:50%;transform:translateX(-50%);font-size:.58rem;color:#555;letter-spacing:2px}
+.t-bar-title{position:absolute;left:50%;transform:translateX(-50%);font-size:.58rem;color:#aaa;letter-spacing:2px}
 
 .t-hero{text-align:center;padding:2rem 1.5rem 1rem}
-.t-404{font-family:'Orbitron',monospace;font-size:5rem;font-weight:900;color:#2a2a2a;letter-spacing:8px;animation:flicker 5s infinite;line-height:1}
+.t-404{font-family:'Orbitron',monospace;font-size:5rem;font-weight:900;color:#6a4a5a;letter-spacing:8px;animation:flicker 5s infinite;line-height:1}
 @keyframes flicker{0%,93%,95%,97%,100%{opacity:1}94%{opacity:.25}96%{opacity:.6}98%{opacity:.35}}
-.t-404-sub{font-family:'Orbitron',monospace;font-size:.72rem;font-weight:700;color:#555;letter-spacing:4px;margin-top:.5rem;animation:fadeIn .6s .5s both}
+.t-404-sub{font-family:'Orbitron',monospace;font-size:.72rem;font-weight:700;color:#aaa;letter-spacing:4px;margin-top:.5rem;animation:fadeIn .6s .5s both}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 
-.glitch-bar{height:1px;background:linear-gradient(90deg,transparent,rgba(204,34,51,.35),transparent);animation:gb 4s infinite;opacity:.9}
+.glitch-bar{height:1px;background:linear-gradient(90deg,transparent,rgba(204,34,51,.45),transparent);animation:gb 4s infinite;opacity:.9}
 @keyframes gb{0%,100%{transform:scaleX(0);opacity:0}45%,55%{transform:scaleX(1);opacity:.9}}
 
 .t-body{padding:1.5rem 1.8rem 2rem}
@@ -254,21 +258,22 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
 .t-line:nth-child(4){animation-delay:3.0s}
 .t-line:nth-child(5){animation-delay:3.8s}
 
-.t-arrow{color:#444;flex-shrink:0}
+.t-arrow{color:#999;flex-shrink:0}
 .t-typed{display:inline-block;overflow:hidden;white-space:nowrap;border-right:1px solid transparent}
 
-.t-line:nth-child(1) .t-typed{color:#666;animation:lineIn .15s .3s forwards,typ .8s .3s steps(40,end) both,blink .6s .3s step-end 4}
-.t-line:nth-child(2) .t-typed{color:#555;animation:lineIn .15s 1.2s forwards,typ .6s 1.2s steps(35,end) both,blink .6s 1.2s step-end 3}
-.t-line:nth-child(3) .t-typed{color:#883344;animation:lineIn .15s 2.1s forwards,typ 1.0s 2.1s steps(45,end) both,blink .6s 2.1s step-end 4}
-.t-line:nth-child(4) .t-typed{color:#555;animation:lineIn .15s 3.0s forwards,typ .7s 3.0s steps(38,end) both,blink .6s 3.0s step-end 3}
-.t-line:nth-child(5) .t-typed{color:#aa3344;border-right:1px solid #883344;animation:lineIn .15s 3.8s forwards,typ .8s 3.8s steps(42,end) both,blink .7s 3.8s step-end infinite}
+/* semua teks di t-typed jadi lebih terang */
+.t-line:nth-child(1) .t-typed{color:#ccc;animation:lineIn .15s .3s forwards,typ .8s .3s steps(40,end) both,blink .6s .3s step-end 4}
+.t-line:nth-child(2) .t-typed{color:#bbb;animation:lineIn .15s 1.2s forwards,typ .6s 1.2s steps(35,end) both,blink .6s 1.2s step-end 3}
+.t-line:nth-child(3) .t-typed{color:#ffaa99;animation:lineIn .15s 2.1s forwards,typ 1.0s 2.1s steps(45,end) both,blink .6s 2.1s step-end 4}
+.t-line:nth-child(4) .t-typed{color:#bbb;animation:lineIn .15s 3.0s forwards,typ .7s 3.0s steps(38,end) both,blink .6s 3.0s step-end 3}
+.t-line:nth-child(5) .t-typed{color:#ff8899;border-right:1px solid #ff8899;animation:lineIn .15s 3.8s forwards,typ .8s 3.8s steps(42,end) both,blink .7s 3.8s step-end infinite}
 
-.t-line:nth-child(3) .t-arrow,.t-line:nth-child(5) .t-arrow{color:#662233}
+.t-line:nth-child(3) .t-arrow,.t-line:nth-child(5) .t-arrow{color:#ff7788}
 
 @keyframes typ{from{width:0}to{width:100%}}
 @keyframes blink{50%{border-color:transparent}}
 
-.t-status{background:#080808;border-top:1px solid #1e1e1e;padding:8px 16px;display:flex;align-items:center;gap:8px;font-size:.52rem;color:#555;letter-spacing:1.5px}
+.t-status{background:#080808;border-top:1px solid #1e1e1e;padding:8px 16px;display:flex;align-items:center;gap:8px;font-size:.52rem;color:#aaa;letter-spacing:1.5px}
 .s-dot-r{width:5px;height:5px;border-radius:50%;background:var(--red2);box-shadow:var(--glow-r);animation:blinkR .9s infinite}
 @keyframes blinkR{50%{opacity:.1;box-shadow:none}}
 </style>
@@ -299,8 +304,8 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
     <div class="t-status">
       <span class="s-dot-r"></span>
       <span>NOT FOUND</span>
-      <span style="margin-left:8px;color:#333">${fileName}.lua</span>
-      <span style="margin-left:auto;color:#333">SILENT HUB v2.0</span>
+      <span style="margin-left:8px;color:#888">${fileName}.lua</span>
+      <span style="margin-left:auto;color:#888">SILENT HUB v2.0</span>
     </div>
   </div>
 </div>
@@ -318,7 +323,7 @@ for(let i=0;i<38;i++){
 </html>`;
 }
 
-// ===== MAIN HANDLER =====
+// ===== MAIN HANDLER ===== (tidak berubah)
 module.exports = function handler(req, res) {
   const { file } = req.query;
 
