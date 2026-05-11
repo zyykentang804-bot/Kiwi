@@ -1,8 +1,82 @@
 const fs   = require('fs');
 const path = require('path');
 
-// ===== HTML: ENCRYPTED PAGE =====
-function encryptedHtml(fileName) {
+// ===== BLOCKED USER AGENTS =====
+// tools yang biasa dipakai orang coba bypass
+const BLOCKED_UA = [
+  'curl', 'wget', 'python-requests', 'python-urllib',
+  'go-http-client', 'java/', 'php/', 'ruby/',
+  'postman', 'insomnia', 'httpie', 'axios',
+];
+
+// ===== ALLOWED ROBLOX EXECUTORS =====
+// Roblox HttpGet tidak kirim User-Agent standar browser
+const ROBLOX_SIGNALS = [
+  'roblox',
+  'delta',
+  'arceus',
+  'codex',
+  'hydrogen',
+  'fluxus',
+  'solara',
+  'synapse',
+  'xeno',
+  'velocity',
+];
+
+function isLikelyExecutor(ua, accept){
+  const uaLower = (ua || '').toLowerCase();
+  const accLower = (accept || '').toLowerCase();
+
+  // browser selalu ada text/html di Accept
+  if(accLower.includes('text/html')) return false;
+
+  // blocked tools
+  for(const b of BLOCKED_UA){
+    if(uaLower.includes(b)) return false;
+  }
+
+  // known executor UA
+  for(const r of ROBLOX_SIGNALS){
+    if(uaLower.includes(r)) return true;
+  }
+
+  // Roblox HttpGet biasanya UA kosong atau sangat pendek
+  if(!ua || ua.length < 20) return true;
+
+  // accept */* tanpa text/html = kemungkinan besar executor
+  if(accLower === '*/*' || accLower === '') return true;
+
+  return false;
+}
+
+// ===== RATE LIMIT (simple in-memory) =====
+const rateMap = {};
+const RATE_LIMIT = 15;    // max request per window
+const RATE_WINDOW = 60000; // 1 menit
+
+function checkRateLimit(ip){
+  const now = Date.now();
+  if(!rateMap[ip]) rateMap[ip] = {count:0, start:now};
+  const entry = rateMap[ip];
+  if(now - entry.start > RATE_WINDOW){
+    entry.count = 0;
+    entry.start = now;
+  }
+  entry.count++;
+  return entry.count > RATE_LIMIT;
+}
+
+// cleanup rate map tiap 5 menit
+setInterval(()=>{
+  const now = Date.now();
+  for(const ip in rateMap){
+    if(now - rateMap[ip].start > RATE_WINDOW * 2) delete rateMap[ip];
+  }
+}, 300000);
+
+// ===== HTML PAGES =====
+function encryptedHtml(fileName){
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,170 +86,64 @@ function encryptedHtml(fileName) {
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#050505;--card:#090909;--border:#161616;--border2:#1e1e1e;
-  --text:#888;--text2:#444;--muted:#222;
-  --green:#00cc77;--green2:#00ff99;
-  --glow-g:0 0 10px rgba(0,204,119,.55),0 0 22px rgba(0,204,119,.18);
-}
-body{
-  background:var(--bg);
-  font-family:'Share Tech Mono',monospace;
-  min-height:100vh;overflow:hidden;
-  display:flex;align-items:center;justify-content:center;
-}
-/* scanlines */
-body::before{
-  content:'';position:fixed;inset:0;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,255,255,.012) 2px,rgba(255,255,255,.012) 4px);
-  pointer-events:none;z-index:1;
-}
-/* grid */
-body::after{
-  content:'';position:fixed;inset:0;
-  background-image:
-    linear-gradient(rgba(255,255,255,.011) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.011) 1px,transparent 1px);
-  background-size:48px 48px;pointer-events:none;z-index:0;
-}
-/* bg image */
+:root{--bg:#050505;--border:#161616;--green:#00cc77;--glow-g:0 0 10px rgba(0,204,119,.55),0 0 22px rgba(0,204,119,.18)}
+body{background:var(--bg);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,255,255,.012) 2px,rgba(255,255,255,.012) 4px);pointer-events:none;z-index:1}
+body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.011) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.011) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0}
 .bg{position:fixed;inset:0;z-index:0;background:url('/background.png') center/cover no-repeat;opacity:.06;pointer-events:none}
-/* particles */
+.vig{position:fixed;inset:0;pointer-events:none;z-index:1;background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.85) 100%)}
 #pts{position:fixed;inset:0;pointer-events:none;z-index:1}
 #pts span{position:absolute;border-radius:50%;animation:rise linear infinite;opacity:0}
-@keyframes rise{
-  0%{transform:translateY(100vh) scale(0);opacity:0}
-  8%,92%{opacity:1}
-  100%{transform:translateY(-8vh) scale(1);opacity:0}
-}
-/* vignette */
-.vig{position:fixed;inset:0;pointer-events:none;z-index:1;background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.85) 100%)}
-
+@keyframes rise{0%{transform:translateY(100vh) scale(0);opacity:0}8%,92%{opacity:1}100%{transform:translateY(-8vh) scale(1);opacity:0}}
 .center{position:relative;z-index:10;width:100%;max-width:680px;padding:1.5rem}
-
-/* terminal window */
-.terminal{
-  background:rgba(5,5,5,.98);
-  border:1px solid var(--border);
-  border-radius:12px;overflow:hidden;
-  box-shadow:0 0 0 1px #0d0d0d,0 32px 90px rgba(0,0,0,.95);
-  animation:termIn .55s cubic-bezier(.16,1,.3,1) both;
-}
-@keyframes termIn{
-  from{opacity:0;transform:translateY(28px) scale(.96)}
-  to{opacity:1;transform:none}
-}
-
-/* terminal top bar */
-.t-bar{
-  background:#080808;border-bottom:1px solid var(--border);
-  padding:10px 14px;display:flex;align-items:center;gap:7px;position:relative;
-}
+.terminal{background:rgba(5,5,5,.98);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 0 0 1px #0d0d0d,0 32px 90px rgba(0,0,0,.95);animation:termIn .55s cubic-bezier(.16,1,.3,1) both}
+@keyframes termIn{from{opacity:0;transform:translateY(28px) scale(.96)}to{opacity:1;transform:none}}
+.t-bar{background:#080808;border-bottom:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;gap:7px;position:relative}
 .dot{width:11px;height:11px;border-radius:50%}
 .dot.r{background:#ff5f56}.dot.y{background:#ffbd2e}.dot.g{background:#27c93f}
-.t-bar-title{
-  position:absolute;left:50%;transform:translateX(-50%);
-  font-size:.56rem;color:#1a1a1a;letter-spacing:2px;
-}
-
-/* big 404 / ENCRYPTED */
-.t-hero{
-  text-align:center;padding:1.8rem 1.5rem .8rem;
-}
-.t-404{
-  font-family:'Orbitron',monospace;
-  font-size:4.5rem;font-weight:900;
-  color:#141414;letter-spacing:8px;
-  text-shadow:0 0 40px rgba(255,255,255,.02);
-  animation:flicker 5s infinite;line-height:1;
-}
-@keyframes flicker{
-  0%,93%,95%,97%,100%{opacity:1}
-  94%{opacity:.25}96%{opacity:.6}98%{opacity:.35}
-}
-.t-404-sub{
-  font-family:'Orbitron',monospace;
-  font-size:.7rem;font-weight:700;
-  color:#1e1e1e;letter-spacing:4px;margin-top:.4rem;
-  animation:fadeIn .6s .5s both;
-}
+.t-bar-title{position:absolute;left:50%;transform:translateX(-50%);font-size:.56rem;color:#1a1a1a;letter-spacing:2px}
+.t-hero{text-align:center;padding:1.8rem 1.5rem .8rem}
+.t-404{font-family:'Orbitron',monospace;font-size:3.5rem;font-weight:900;color:#141414;letter-spacing:6px;animation:flicker 5s infinite;line-height:1}
+@keyframes flicker{0%,93%,95%,97%,100%{opacity:1}94%{opacity:.25}96%{opacity:.6}98%{opacity:.35}}
+.t-sub{font-family:'Orbitron',monospace;font-size:.68rem;color:#1e1e1e;letter-spacing:4px;margin-top:.4rem;animation:fadeIn .6s .5s both}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-
-/* glitch bar */
-.glitch-bar{
-  height:1px;
-  background:linear-gradient(90deg,transparent,#2a2a2a,transparent);
-  animation:glitchBar 4s infinite;opacity:.7;
-}
-@keyframes glitchBar{
-  0%,100%{transform:scaleX(0);opacity:0}
-  45%,55%{transform:scaleX(1);opacity:.7}
-}
-
-/* body lines */
+.glitch-bar{height:1px;background:linear-gradient(90deg,transparent,#2a2a2a,transparent);animation:gb 4s infinite}
+@keyframes gb{0%,100%{transform:scaleX(0)}45%,55%{transform:scaleX(1)}}
 .t-body{padding:1.4rem 1.6rem 1.8rem}
-.t-line{
-  display:flex;align-items:flex-start;gap:8px;
-  margin-bottom:.55rem;opacity:0;
-  animation:lineIn .15s ease forwards;
-  font-size:.7rem;
-}
+.t-line{display:flex;align-items:flex-start;gap:8px;margin-bottom:.55rem;opacity:0;animation:lineIn .15s ease forwards;font-size:.68rem}
 @keyframes lineIn{to{opacity:1}}
-.t-line:nth-child(1){animation-delay:.3s}
-.t-line:nth-child(2){animation-delay:1.2s}
-.t-line:nth-child(3){animation-delay:2.1s}
-.t-line:nth-child(4){animation-delay:3.0s}
-.t-line:nth-child(5){animation-delay:3.8s}
-.t-line:nth-child(6){animation-delay:4.5s}
+.t-line:nth-child(1){animation-delay:.3s}.t-line:nth-child(2){animation-delay:1.1s}
+.t-line:nth-child(3){animation-delay:2.0s}.t-line:nth-child(4){animation-delay:2.9s}
+.t-line:nth-child(5){animation-delay:3.7s}.t-line:nth-child(6){animation-delay:4.4s}
 .t-arrow{color:#1e1e1e;flex-shrink:0}
-.t-typed{
-  display:inline-block;overflow:hidden;white-space:nowrap;
-  border-right:1px solid transparent;
-}
-/* typing per line */
-.t-line:nth-child(1) .t-typed{color:#333;animation:lineIn .15s .3s forwards,typ .8s .3s steps(40,end) both,blink .6s .3s step-end 4}
-.t-line:nth-child(2) .t-typed{color:#2a2a2a;animation:lineIn .15s 1.2s forwards,typ .6s 1.2s steps(35,end) both,blink .6s 1.2s step-end 3}
-.t-line:nth-child(3) .t-typed{color:#333;animation:lineIn .15s 2.1s forwards,typ 1.0s 2.1s steps(45,end) both,blink .6s 2.1s step-end 4}
-.t-line:nth-child(4) .t-typed{color:#2a2a2a;animation:lineIn .15s 3.0s forwards,typ .7s 3.0s steps(38,end) both,blink .6s 3.0s step-end 3}
-.t-line:nth-child(5) .t-typed{color:#1e1e1e;animation:lineIn .15s 3.8s forwards,typ .5s 3.8s steps(30,end) both,blink .6s 3.8s step-end 2}
-.t-line:nth-child(6) .t-typed{color:#2a2a2a;border-right:1px solid #333;animation:lineIn .15s 4.5s forwards,typ .8s 4.5s steps(42,end) both,blink .7s 4.5s step-end infinite}
+.t-typed{display:inline-block;overflow:hidden;white-space:nowrap;border-right:1px solid transparent}
+.t-line:nth-child(1) .t-typed{color:#2e2e2e;animation:lineIn .15s .3s forwards,typ .8s .3s steps(40,end) both,blink .6s .3s step-end 4}
+.t-line:nth-child(2) .t-typed{color:#242424;animation:lineIn .15s 1.1s forwards,typ .6s 1.1s steps(35,end) both,blink .6s 1.1s step-end 3}
+.t-line:nth-child(3) .t-typed{color:#2e2e2e;animation:lineIn .15s 2.0s forwards,typ .9s 2.0s steps(45,end) both,blink .6s 2.0s step-end 4}
+.t-line:nth-child(4) .t-typed{color:#222;animation:lineIn .15s 2.9s forwards,typ .7s 2.9s steps(38,end) both,blink .6s 2.9s step-end 3}
+.t-line:nth-child(5) .t-typed{color:#1c1c1c;animation:lineIn .15s 3.7s forwards,typ .5s 3.7s steps(30,end) both,blink .6s 3.7s step-end 2}
+.t-line:nth-child(6) .t-typed{color:#2a2a2a;border-right:1px solid #333;animation:lineIn .15s 4.4s forwards,typ .8s 4.4s steps(42,end) both,blink .7s 4.4s step-end infinite}
 @keyframes typ{from{width:0}to{width:100%}}
 @keyframes blink{50%{border-color:transparent}}
-
-/* status bar */
-.t-status{
-  background:#070707;border-top:1px solid var(--border);
-  padding:7px 16px;display:flex;align-items:center;gap:8px;
-  font-size:.5rem;color:#1a1a1a;letter-spacing:1.5px;
-}
-.s-dot-g{
-  width:5px;height:5px;border-radius:50%;
-  background:var(--green);box-shadow:var(--glow-g);
-  animation:blinkG .9s infinite;
-}
+.t-status{background:#070707;border-top:1px solid var(--border);padding:7px 16px;display:flex;align-items:center;gap:8px;font-size:.5rem;color:#1a1a1a;letter-spacing:1.5px}
+.s-dot-g{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:var(--glow-g);animation:blinkG .9s infinite}
 @keyframes blinkG{50%{opacity:.1;box-shadow:none}}
 </style>
 </head>
 <body>
-<div class="bg"></div>
-<div class="vig"></div>
+<div class="bg"></div><div class="vig"></div>
 <div id="pts"></div>
-
 <div class="center">
   <div class="terminal">
-
     <div class="t-bar">
       <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
       <span class="t-bar-title">masgal.js — bash — 80×24</span>
     </div>
-
     <div class="t-hero">
       <div class="t-404">ENCRYPT</div>
-      <div class="t-404-sub">// ACCESS DENIED //</div>
+      <div class="t-sub">// ACCESS DENIED //</div>
     </div>
-
     <div class="glitch-bar"></div>
-
     <div class="t-body">
       <div class="t-line"><span class="t-arrow">&gt;</span><span class="t-typed">localhost("masgal.js") = FILE SUDAH TERENCRYPT</span></div>
       <div class="t-line"><span class="t-arrow">&gt;</span><span class="t-typed">STATUS: [██████████] 100% — LOCKED</span></div>
@@ -184,46 +152,46 @@ body::after{
       <div class="t-line"><span class="t-arrow">&gt;</span><span class="t-typed">· · · · · · · · · · · · · · · · · · · ·</span></div>
       <div class="t-line"><span class="t-arrow">&gt;</span><span class="t-typed">USE EXECUTOR LOADSTRING TO ACCESS_</span></div>
     </div>
-
     <div class="t-status">
-      <span class="s-dot-g"></span>
-      <span>ENCRYPTED</span>
+      <span class="s-dot-g"></span><span>ENCRYPTED</span>
       <span style="margin-left:8px;color:#1a1a1a">masgal.js</span>
       <span style="margin-left:auto">SILENT HUB v2.0</span>
     </div>
-
   </div>
 </div>
-
 <script>
 const c=document.getElementById('pts');
 for(let i=0;i<38;i++){
-  const p=document.createElement('span');
-  const sz=Math.random()*2+.6;
-  p.style.cssText='width:'+sz+'px;height:'+sz+'px;left:'+(Math.random()*100)+'%;background:#161616;animation-duration:'+(Math.random()*18+10)+'s;animation-delay:'+(Math.random()*12)+'s;';
+  const p=document.createElement('span');const sz=Math.random()*2+.6;
+  p.style.cssText='width:'+sz+'px;height:'+sz+'px;left:'+(Math.random()*100)+'%;background:#141414;animation-duration:'+(Math.random()*18+10)+'s;animation-delay:'+(Math.random()*12)+'s;';
   c.appendChild(p);
 }
+// anti devtools inspect
+(function(){
+  setInterval(()=>{
+    const t=new Date();
+    debugger;
+    if(new Date()-t>100){
+      document.body.innerHTML='';
+    }
+  },2000);
+})();
 <\/script>
 </body>
 </html>`;
 }
 
-// ===== HTML: NOT FOUND PAGE =====
-function notFoundHtml(fileName) {
+function notFoundHtml(fileName){
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>404 NOT FOUND — SILENT HUB</title>
+<title>404 — SILENT HUB</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#050505;--border:#161616;
-  --red:#cc2233;--red2:#ff3344;
-  --glow-r:0 0 10px rgba(204,34,51,.55),0 0 22px rgba(204,34,51,.18);
-}
+:root{--bg:#050505;--border:#161616;--red:#cc2233;--red2:#ff3344;--glow-r:0 0 10px rgba(204,34,51,.55),0 0 22px rgba(204,34,51,.18)}
 body{background:var(--bg);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center}
 body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,255,255,.012) 2px,rgba(255,255,255,.012) 4px);pointer-events:none;z-index:1}
 body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(255,255,255,.011) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.011) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0}
@@ -242,25 +210,22 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
 .t-hero{text-align:center;padding:1.8rem 1.5rem .8rem}
 .t-404{font-family:'Orbitron',monospace;font-size:5rem;font-weight:900;color:#141414;letter-spacing:8px;animation:flicker 5s infinite;line-height:1}
 @keyframes flicker{0%,93%,95%,97%,100%{opacity:1}94%{opacity:.25}96%{opacity:.6}98%{opacity:.35}}
-.t-404-sub{font-family:'Orbitron',monospace;font-size:.7rem;font-weight:700;color:#1e1e1e;letter-spacing:4px;margin-top:.4rem;animation:fadeIn .6s .5s both}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.glitch-bar{height:1px;background:linear-gradient(90deg,transparent,#cc223322,transparent);animation:gb 4s infinite;opacity:.7}
-@keyframes gb{0%,100%{transform:scaleX(0);opacity:0}45%,55%{transform:scaleX(1);opacity:.7}}
+.t-sub{font-family:'Orbitron',monospace;font-size:.68rem;color:#1e1e1e;letter-spacing:4px;margin-top:.4rem}
+.glitch-bar{height:1px;background:linear-gradient(90deg,transparent,#cc223322,transparent);animation:gb 4s infinite}
+@keyframes gb{0%,100%{transform:scaleX(0)}45%,55%{transform:scaleX(1)}}
 .t-body{padding:1.4rem 1.6rem 1.8rem}
-.t-line{display:flex;align-items:flex-start;gap:8px;margin-bottom:.55rem;opacity:0;animation:lineIn .15s ease forwards;font-size:.7rem}
+.t-line{display:flex;align-items:flex-start;gap:8px;margin-bottom:.55rem;opacity:0;animation:lineIn .15s ease forwards;font-size:.68rem}
 @keyframes lineIn{to{opacity:1}}
-.t-line:nth-child(1){animation-delay:.3s}
-.t-line:nth-child(2){animation-delay:1.2s}
-.t-line:nth-child(3){animation-delay:2.1s}
-.t-line:nth-child(4){animation-delay:3.0s}
-.t-line:nth-child(5){animation-delay:3.8s}
+.t-line:nth-child(1){animation-delay:.3s}.t-line:nth-child(2){animation-delay:1.1s}
+.t-line:nth-child(3){animation-delay:2.0s}.t-line:nth-child(4){animation-delay:2.9s}
+.t-line:nth-child(5){animation-delay:3.7s}
 .t-arrow{color:#1e1e1e;flex-shrink:0}
 .t-typed{display:inline-block;overflow:hidden;white-space:nowrap;border-right:1px solid transparent}
 .t-line:nth-child(1) .t-typed{color:#2a1010;animation:lineIn .15s .3s forwards,typ .8s .3s steps(40,end) both,blink .6s .3s step-end 4}
-.t-line:nth-child(2) .t-typed{color:#1e1e1e;animation:lineIn .15s 1.2s forwards,typ .6s 1.2s steps(35,end) both,blink .6s 1.2s step-end 3}
-.t-line:nth-child(3) .t-typed{color:#2a1010;animation:lineIn .15s 2.1s forwards,typ 1.0s 2.1s steps(45,end) both,blink .6s 2.1s step-end 4}
-.t-line:nth-child(4) .t-typed{color:#1a1a1a;animation:lineIn .15s 3.0s forwards,typ .7s 3.0s steps(38,end) both,blink .6s 3.0s step-end 3}
-.t-line:nth-child(5) .t-typed{color:#1e1e1e;border-right:1px solid #2a1010;animation:lineIn .15s 3.8s forwards,typ .8s 3.8s steps(42,end) both,blink .7s 3.8s step-end infinite}
+.t-line:nth-child(2) .t-typed{color:#1e1e1e;animation:lineIn .15s 1.1s forwards,typ .6s 1.1s steps(35,end) both,blink .6s 1.1s step-end 3}
+.t-line:nth-child(3) .t-typed{color:#2a1010;animation:lineIn .15s 2.0s forwards,typ .9s 2.0s steps(45,end) both,blink .6s 2.0s step-end 4}
+.t-line:nth-child(4) .t-typed{color:#1a1a1a;animation:lineIn .15s 2.9s forwards,typ .7s 2.9s steps(38,end) both,blink .6s 2.9s step-end 3}
+.t-line:nth-child(5) .t-typed{color:#1e1e1e;border-right:1px solid #2a1010;animation:lineIn .15s 3.7s forwards,typ .8s 3.7s steps(42,end) both,blink .7s 3.7s step-end infinite}
 @keyframes typ{from{width:0}to{width:100%}}
 @keyframes blink{50%{border-color:transparent}}
 .t-status{background:#070707;border-top:1px solid var(--border);padding:7px 16px;display:flex;align-items:center;gap:8px;font-size:.5rem;color:#1a1a1a;letter-spacing:1.5px}
@@ -269,8 +234,7 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
 </style>
 </head>
 <body>
-<div class="bg"></div>
-<div class="vig"></div>
+<div class="bg"></div><div class="vig"></div>
 <div id="pts"></div>
 <div class="center">
   <div class="terminal">
@@ -280,20 +244,19 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
     </div>
     <div class="t-hero">
       <div class="t-404">404</div>
-      <div class="t-404-sub">// FILE NOT FOUND //</div>
+      <div class="t-sub">// FILE NOT FOUND //</div>
     </div>
     <div class="glitch-bar"></div>
     <div class="t-body">
       <div class="t-line"><span class="t-arrow">&gt;</span><span class="t-typed">localhost("masgal.js") = RESOLVING PATH...</span></div>
-      <div class="t-line"><span class="t-arrow">&gt;</span><span class="t-typed">SCANNING REPO: /scripts/${fileName}.lua</span></div>
+      <div class="t-line"><span class="t-arrow">&gt;</span><span class="t-typed">SCANNING REPO: /scripts/${String(fileName).replace(/[<>&"]/g,'')}.lua</span></div>
       <div class="t-line"><span class="t-arrow">&gt;</span><span class="t-typed">ERROR: FILE NOT FOUND IN REPOSITORY</span></div>
       <div class="t-line"><span class="t-arrow">&gt;</span><span class="t-typed">STATUS: [░░░░░░░░░░] 0% — NOT FOUND</span></div>
       <div class="t-line"><span class="t-arrow">&gt;</span><span class="t-typed">CHECK URL OR CONTACT ADMIN_</span></div>
     </div>
     <div class="t-status">
-      <span class="s-dot-r"></span>
-      <span>NOT FOUND</span>
-      <span style="margin-left:8px;color:#1a1a1a">${fileName}.lua</span>
+      <span class="s-dot-r"></span><span>NOT FOUND</span>
+      <span style="margin-left:8px;color:#1a1a1a">${String(fileName).replace(/[<>&"]/g,'')}.lua</span>
       <span style="margin-left:auto">SILENT HUB v2.0</span>
     </div>
   </div>
@@ -301,9 +264,8 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
 <script>
 const c=document.getElementById('pts');
 for(let i=0;i<38;i++){
-  const p=document.createElement('span');
-  const sz=Math.random()*2+.6;
-  p.style.cssText='width:'+sz+'px;height:'+sz+'px;left:'+(Math.random()*100)+'%;background:#161616;animation-duration:'+(Math.random()*18+10)+'s;animation-delay:'+(Math.random()*12)+'s;';
+  const p=document.createElement('span');const sz=Math.random()*2+.6;
+  p.style.cssText='width:'+sz+'px;height:'+sz+'px;left:'+(Math.random()*100)+'%;background:#141414;animation-duration:'+(Math.random()*18+10)+'s;animation-delay:'+(Math.random()*12)+'s;';
   c.appendChild(p);
 }
 <\/script>
@@ -311,53 +273,80 @@ for(let i=0;i<38;i++){
 </html>`;
 }
 
+function rateLimitHtml(){
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>429 — SILENT HUB</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>*{margin:0;padding:0;box-sizing:border-box}body{background:#050505;font-family:'Share Tech Mono',monospace;display:flex;align-items:center;justify-content:center;min-height:100vh;color:#cc2233;font-size:.7rem;letter-spacing:2px;text-align:center}</style>
+</head><body>
+<div>
+  <div style="font-size:3rem;margin-bottom:1rem">🚫</div>
+  <div style="color:#888;margin-bottom:.5rem">429 — TOO MANY REQUESTS</div>
+  <div style="color:#333">Slow down. Try again in 60 seconds.</div>
+</div>
+</body></html>`;
+}
+
 // ===== MAIN HANDLER =====
-export default function handler(req, res) {
-  const { file } = req.query;
+export default function handler(req, res){
 
-  // sanitize
-  const safe = (file || '').replace(/[^a-zA-Z0-9_]/g, '');
-
-  // no file param
-  if (!safe) {
-    return res
-      .status(400)
-      .setHeader('Content-Type', 'text/html')
-      .send(notFoundHtml('undefined'));
+  // hanya izinkan GET
+  if(req.method !== 'GET'){
+    return res.status(405).setHeader('Content-Type','text/plain').send('Method Not Allowed');
   }
 
-  const filePath = path.join(process.cwd(), 'scripts', safe + '.lua');
+  // ambil IP
+  const ip = (
+    req.headers['x-forwarded-for']?.split(',')[0] ||
+    req.headers['x-real-ip'] ||
+    req.socket?.remoteAddress ||
+    'unknown'
+  ).trim();
 
-  // FILE TIDAK ADA → NOT FOUND page
-  if (!fs.existsSync(filePath)) {
-    return res
-      .status(404)
-      .setHeader('Content-Type', 'text/html')
+  // rate limit
+  if(checkRateLimit(ip)){
+    return res.status(429)
+      .setHeader('Content-Type','text/html')
+      .setHeader('Retry-After','60')
+      .send(rateLimitHtml());
+  }
+
+  // sanitize file param — hanya huruf, angka, underscore
+  const raw  = req.query.file || '';
+  const safe = raw.replace(/[^a-zA-Z0-9_]/g,'');
+
+  // tolak jika kosong atau ada path traversal attempt
+  if(!safe || safe !== raw){
+    return res.status(400)
+      .setHeader('Content-Type','text/html')
+      .send(notFoundHtml('invalid'));
+  }
+
+  // cek file
+  const filePath = path.join(process.cwd(),'scripts',safe+'.lua');
+  if(!fs.existsSync(filePath)){
+    return res.status(404)
+      .setHeader('Content-Type','text/html')
       .send(notFoundHtml(safe));
   }
 
-  // FILE ADA → cek request type
-  // jika dari browser (Accept: text/html) → tampilkan encrypted page
-  // jika dari executor/HttpGet (Accept: */*)  → return Lua content
-  const accept = req.headers['accept'] || '';
-  const userAgent = req.headers['user-agent'] || '';
+  // deteksi browser vs executor
+  const ua     = req.headers['user-agent'] || '';
+  const accept = req.headers['accept']     || '';
 
-  // executor Roblox tidak kirim Accept: text/html
-  const isBrowser = accept.includes('text/html');
-
-  if (isBrowser) {
-    // tampilkan encrypted page
-    return res
-      .status(200)
-      .setHeader('Content-Type', 'text/html')
+  if(!isLikelyExecutor(ua, accept)){
+    // browser atau tool — tampilkan encrypted page
+    return res.status(200)
+      .setHeader('Content-Type','text/html')
+      .setHeader('X-Robots-Tag','noindex,nofollow')
+      .setHeader('Cache-Control','no-store,no-cache')
       .send(encryptedHtml(safe));
   }
 
-  // executor → return Lua content langsung
-  const content = fs.readFileSync(filePath, 'utf8');
-  return res
-    .status(200)
-    .setHeader('Content-Type', 'text/plain')
-    .setHeader('Access-Control-Allow-Origin', '*')
+  // executor terdeteksi — kirim Lua
+  const content = fs.readFileSync(filePath,'utf8');
+  return res.status(200)
+    .setHeader('Content-Type','text/plain')
+    .setHeader('Access-Control-Allow-Origin','*')
+    .setHeader('Cache-Control','no-store')
     .send(content);
 }
