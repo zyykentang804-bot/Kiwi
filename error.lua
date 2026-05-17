@@ -1,5 +1,5 @@
 -- ============================================================================
--- SILENT HUB v1 - ULTIMATE EDITION (Full Bypass + Premium ESP)
+-- SILENT HUB v1 - FULL ULTIMATE EDITION (Final Fix)
 -- ============================================================================
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -7,6 +7,7 @@ local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 local Camera = workspace.CurrentCamera
+local HttpService = game:GetService("HttpService")
 
 -- ==================== CEK KETERSEDIAAN FUNGSI ====================
 local hasFilterGC = type(filtergc) == "function"
@@ -14,29 +15,22 @@ local hasGetGC = type(getgc) == "function"
 local hasHookFunction = type(hookfunction) == "function"
 local hasDrawing = type(Drawing) == "table"
 
-if not hasFilterGC or not hasGetGC or not hasHookFunction then
-    warn("[Silent Hub] Executor tidak support filtergc/getgc/hookfunction. Bypass emulator dinonaktifkan.")
-end
 if not hasDrawing then
     warn("[Silent Hub] Drawing tidak support. ESP dan FOV Circle tidak akan muncul.")
 end
 
 -- ==================== FULL BYPASS EMULATOR (Hyphon) ====================
 local bypassActive = false
-local Emulator = nil
-
 if hasFilterGC and hasGetGC and hasHookFunction then
     pcall(function()
         local OWpCsbCTXfeDG = filtergc('function', {IgnoreExecutor = true, Name = "OWpCsbCTXfeDG"}, true)
         if not OWpCsbCTXfeDG then return end
         
         local source = debug.info(OWpCsbCTXfeDG, "s")
-        
         local function getUpval(func, idx)
             local ok, v = pcall(debug.getupvalue, func, idx)
             return ok and v or nil
         end
-        
         local function safeGetUpvalues(func)
             local ok, result = pcall(debug.getupvalues, func)
             return ok and result or {}
@@ -127,14 +121,13 @@ if hasFilterGC and hasGetGC and hasHookFunction then
                 end
             end
         end
-        
         if not TenthArgument_Table then
             for i, v in upvals2247 do
                 if typeof(v) == "table" then TenthArgument_Table = v; break end
             end
         end
         
-        Emulator = setmetatable({
+        local Emulator = setmetatable({
             Encode = function(s) return s end,
             Decode = function(s) return s end,
             fake_dec = getfenv(OWpCsbCTXfeDG).fake_dec,
@@ -260,87 +253,58 @@ else
     print("⚠️ Bypass emulator tidak aktif (executor tidak support fungsi yang diperlukan)")
 end
 
--- ==================== LOAD LIBRARY UI (DENGAN FALLBACK) ====================
+-- ==================== LOAD LIBRARY UI ====================
 local Library = nil
-local libLoaded = false
-
 pcall(function()
-    local url = "https://raw.githubusercontent.com/sametexe001/sametlibs/refs/heads/main/idkThisOne/Library.lua"
-    local libContent = game:HttpGet(url)
-    if libContent and type(libContent) == "string" then
-        Library = loadstring(libContent)()
-        if Library then libLoaded = true end
-    end
+    Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/sametexe001/sametlibs/refs/heads/main/idkThisOne/Library.lua"))()
 end)
 
-if not libLoaded then
-    -- Fallback GUI sederhana
-    local screenGui = Instance.new("ScreenGui")
-    screenGui.Name = "SilentHub_Fallback"
-    screenGui.ResetOnSpawn = false
-    screenGui.Parent = game:GetService("CoreGui")
-    
-    local frame = Instance.new("Frame")
-    frame.Size = UDim2.new(0, 360, 0, 260)
-    frame.Position = UDim2.new(0.5, -180, 0.5, -130)
-    frame.BackgroundColor3 = Color3.fromRGB(15, 15, 22)
-    frame.BackgroundTransparency = 0.1
-    frame.BorderSizePixel = 0
-    frame.Parent = screenGui
-    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 14)
-    
-    local title = Instance.new("TextLabel")
-    title.Size = UDim2.new(1, 0, 0, 45)
-    title.Position = UDim2.new(0, 0, 0, 10)
-    title.BackgroundTransparency = 1
-    title.Text = "SILENT HUB v1"
-    title.TextColor3 = Color3.fromRGB(255, 100, 100)
-    title.Font = Enum.Font.GothamBold
-    title.TextSize = 22
-    title.Parent = frame
-    
-    local status = Instance.new("TextLabel")
-    status.Size = UDim2.new(1, -20, 0, 50)
-    status.Position = UDim2.new(0, 10, 0, 70)
-    status.BackgroundTransparency = 1
-    status.Text = bypassActive and "✅ Bypass Emulator: AKTIF" or "⚠️ Bypass Emulator: TIDAK AKTIF\n(Executor tidak support)"
-    status.TextColor3 = bypassActive and Color3.fromRGB(100, 255, 100) or Color3.fromRGB(255, 200, 100)
-    status.TextWrapped = true
-    status.Parent = frame
-    
-    local note = Instance.new("TextLabel")
-    note.Size = UDim2.new(1, -20, 0, 60)
-    note.Position = UDim2.new(0, 10, 0, 130)
-    note.BackgroundTransparency = 1
-    note.Text = "Library UI gagal dimuat.\nFitur terbatas.\nGunakan Synapse X / Krnl untuk full fitur."
-    note.TextColor3 = Color3.fromRGB(180, 180, 220)
-    note.TextSize = 12
-    note.TextWrapped = true
-    note.Parent = frame
-    
-    local closeBtn = Instance.new("TextButton")
-    closeBtn.Size = UDim2.new(0, 100, 0, 35)
-    closeBtn.Position = UDim2.new(0.5, -50, 1, -50)
-    closeBtn.Text = "Tutup"
-    closeBtn.BackgroundColor3 = Color3.fromRGB(80, 80, 100)
-    closeBtn.Parent = frame
-    Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 8)
-    closeBtn.MouseButton1Click:Connect(function()
-        screenGui:Destroy()
-    end)
-    
-    print("[Silent Hub] Fallback GUI dibuat karena library gagal dimuat.")
+if not Library then
+    -- Fallback GUI
+    local sg = Instance.new("ScreenGui")
+    sg.Name = "SilentHub_Fallback"
+    sg.Parent = game:GetService("CoreGui")
+    local f = Instance.new("Frame")
+    f.Size = UDim2.new(0, 360, 0, 260)
+    f.Position = UDim2.new(0.5, -180, 0.5, -130)
+    f.BackgroundColor3 = Color3.fromRGB(15,15,22)
+    f.Parent = sg
+    Instance.new("UICorner", f).CornerRadius = UDim.new(0,14)
+    local t = Instance.new("TextLabel")
+    t.Size = UDim2.new(1,0,0,45)
+    t.Position = UDim2.new(0,0,0,10)
+    t.BackgroundTransparency = 1
+    t.Text = "SILENT HUB v1"
+    t.TextColor3 = Color3.fromRGB(255,100,100)
+    t.Font = Enum.Font.GothamBold
+    t.TextSize = 22
+    t.Parent = f
+    local st = Instance.new("TextLabel")
+    st.Size = UDim2.new(1,-20,0,50)
+    st.Position = UDim2.new(0,10,0,70)
+    st.BackgroundTransparency = 1
+    st.Text = bypassActive and "✅ Bypass Emulator: AKTIF" or "⚠️ Bypass Emulator: TIDAK AKTIF\n(Executor tidak support)"
+    st.TextWrapped = true
+    st.Parent = f
+    local c = Instance.new("TextButton")
+    c.Size = UDim2.new(0,100,0,35)
+    c.Position = UDim2.new(0.5,-50,1,-50)
+    c.Text = "Tutup"
+    c.BackgroundColor3 = Color3.fromRGB(80,80,100)
+    c.Parent = f
+    Instance.new("UICorner", c).CornerRadius = UDim.new(0,8)
+    c.MouseButton1Click:Connect(function() sg:Destroy() end)
     return
 end
 
--- ==================== MAIN GUI (FULL FEATURES) ====================
+-- ==================== MAIN GUI ====================
 local Window = Library:Window({
     Logo = "123748867365417",
     FadeSpeed = 0.15,
     PagePadding = 19,
 })
 
--- Tema abu-abu (gray accent)
+-- Tema abu-abu
 Library.ChangeTheme("Accent", Color3.fromRGB(160, 160, 160))
 Library.ChangeTheme("Light Accent", Color3.fromRGB(200, 200, 200))
 
@@ -418,7 +382,7 @@ do
         AimSection:Dropdown({ Name = "Target Part", Flag = "Aimbot_Part", Items = {"Head","HumanoidRootPart","UpperTorso","LowerTorso"}, Default = "Head", Callback = function(v) aimPart = v end })
     end
     
-    -- Silent Aim (dari Silent Hub asli, sudah work)
+    -- Silent Aim (lengkap dengan FOV circle, wallbang, excluded, snapline)
     do
         local SilentSection = SilentSub:Section({Name = "Silent Aim", Side = "Left"})
         local SilentAimEnabled = false
@@ -507,7 +471,6 @@ do
             return closestTarget, closestPart
         end
         
-        -- Hook CastBlacklist jika fungsi tersedia
         if hasHookFunction and hasGetGC then
             task.spawn(function()
                 while true do
@@ -552,7 +515,6 @@ do
             end)
         end
         
-        -- UI Elements
         local saToggle = SilentSection:Toggle({ Name = "Enable Silent Aim", Flag = "Silent_Enable", Default = false, Callback = function(v) SilentAimEnabled = v end })
         saToggle:Keybind({ Name = "Keybind", Flag = "Silent_Key", Default = Enum.KeyCode.Q, Mode = "Toggle" })
         SilentSection:Slider({ Name = "FOV Radius", Flag = "Silent_FOV", Min = 50, Max = 500, Default = 250, Callback = function(v) FovRadius = v; if FovCircle then FovCircle.Radius = v end end })
@@ -566,7 +528,6 @@ do
         SilentSection:Slider({ Name = "Snapline Max Distance", Flag = "Silent_SnaplineDist", Min = 1, Max = 700, Default = 300, Suffix = " studs", Callback = function(v) snaplineMaxDist = v end })
         SilentSection:Colorpicker({ Name = "Snapline Color", Flag = "Silent_SnaplineColor", Default = Color3.fromRGB(255,255,255), Callback = function(col) snaplineColor = col; if snaplineLine then snaplineLine.Color = col end end })
         
-        -- Excluded Players
         SilentSection:Label("Excluded Players", "Left")
         local function getPlayerList()
             local list = {}
@@ -594,12 +555,11 @@ do
     end
 end
 
--- ==================== TAB 2: TELEPORT (VEHICLE + INSTANT) ====================
+-- ==================== TAB 2: TELEPORT ====================
 do
     local VehicleSub = Tab2:SubPage({Name = "Vehicle Teleport"})
     local InstantSub = Tab2:SubPage({Name = "Instant Teleport"})
     
-    -- Vehicle Teleport
     do
         local vehSection = VehicleSub:Section({Name = "Vehicle Teleport", Side = "Left"})
         local cachedSeat = nil
@@ -613,14 +573,12 @@ do
             updateSeatCache()
         end)
         updateSeatCache()
-        
         local function teleportTo(pos)
             if not cachedSeat then Library:Notification("Error","Not in vehicle!",2) return end
             local vm = cachedSeat:FindFirstAncestorWhichIsA("Model")
             if vm and vm.PrimaryPart then vm:SetPrimaryPartCFrame(CFrame.new(pos.X,pos.Y+2,pos.Z))
             elseif cachedSeat then cachedSeat.CFrame = CFrame.new(pos.X,pos.Y+2,pos.Z) end
         end
-        
         local LOCATIONS = {
             {"Dealer NPC", Vector3.new(770.992,3.71,433.75)},
             {"NPC Marshmallow", Vector3.new(510.061,4.476,600.548)},
@@ -644,7 +602,6 @@ do
         end)
     end
     
-    -- Instant Teleport
     do
         local instSection = InstantSub:Section({Name = "Instant Teleport (Void)", Side = "Left"})
         local isTeleporting = false; local pendingDest = nil
@@ -817,249 +774,102 @@ do
     local EspSub = Tab4:SubPage({Name = "ESP"})
     local CustomSub = Tab4:SubPage({Name = "Custom Name"})
     
-    -- ==================== PREMIUM ESP (DARI VALARY.GG) ====================
+    -- ESP (lengkap dengan drawing, box, name, health, distance, skeleton, fill, color picker)
     if not hasDrawing then
         EspSub:Section({Name = "ESP", Side = "Left"}):Label("ESP tidak didukung oleh executor ini (Drawing tidak tersedia)", "Left")
     else
-        -- Inisialisasi ESP premium
-        local ESPFonts = {}
-        local Options, MiscOptions
-        
-        -- Font loading
-        local Fonts = {}
-        do
-            local function RegisterFont(Name, Weight, Style, Asset)
-                writefile(Asset.Id, Asset.Font)
-                local Data = {
-                    name = Name,
-                    faces = { { name = "Normal", weight = Weight, style = Style, assetId = getcustomasset(Asset.Id) } }
-                }
-                writefile(Name .. ".font", HttpService:JSONEncode(Data))
-                return getcustomasset(Name .. ".font")
-            end
-            
-            local FontNames = {
-                ["ProggyClean"] = "ProggyClean.ttf",
-                ["Tahoma"] = "fs-tahoma-8px.ttf",
-                ["Verdana"] = "Verdana-Font.ttf",
-                ["SmallestPixel"] = "smallest_pixel-7.ttf",
-                ["ProggyTiny"] = "ProggyTiny.ttf",
-                ["Minecraftia"] = "Minecraftia-Regular.ttf",
-                ["Tahoma Bold"] = "tahoma_bold.ttf"
-            }
-            
-            for name, suffix in FontNames do 
-                local RegisteredFont = RegisterFont(name, 400, "Normal", {
-                    Id = suffix,
-                    Font = game:HttpGet("https://github.com/i77lhm/storage/raw/refs/heads/main/fonts/" .. suffix),
-                })
-                Fonts[name] = Font.new(RegisteredFont, Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-                ESPFonts[name] = Font.new(RegisteredFont, Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-            end
-        end
-        
-        MiscOptions = {
-            ["Enabled"] = false;
-            ["Render_Distance"] = 500;
-            ["Boxes"] = false;
-            ["BoxType"] = "Corner";
-            ["Box Gradient 1"] = { Color = Color3.fromRGB(255, 255, 255), Transparency = 0.9 };
-            ["Box Gradient 2"] = { Color = Color3.fromRGB(255, 255, 255), Transparency = 0.4 };
-            ["Box Gradient Rotation"] = 90;
-            ["Box Fill"] = false; 
-            ["Box Fill 1"] = { Color = Color3.fromRGB(255, 255, 255), Transparency = 0.9 };
-            ["Box Fill 2"] = { Color = Color3.fromRGB(255, 255, 255), Transparency = 0.9 };
-            ["Box Fill Rotation"] = 0;
-            ["Healthbar"] = false;
-            ["Healthbar_Position"] = "Left";
-            ["Healthbar_Number"] = false;
-            ["Healthbar_Low"] = { Color = Color3.fromRGB(255, 0, 0), Transparency = 1};
-            ["Healthbar_Medium"] = { Color = Color3.fromRGB(255, 255, 0), Transparency = 1};
-            ["Healthbar_High"] = { Color = Color3.fromRGB(0, 255, 0), Transparency = 1};
-            ["Healthbar_Font"] = "Verdana";
-            ["Healthbar_Text_Size"] = 11;
-            ["Healthbar_Thickness"] = 1;
-            ["Healthbar_Tween"] = false;
-            ["Healthbar_EasingStyle"] = "Circular";
-            ["Healthbar_EasingDirection"] = "InOut";
-            ["Healthbar_Easing_Speed"] = 1;
-            ["Name_Text"] = false; 
-            ["Name_Text_Color"] = { Color = Color3.fromRGB(255, 255, 255) };
-            ["Name_Text_Position"] = "Top";
-            ["Name_Text_Font"] = "Verdana";
-            ["Name_Text_Size"] = 11;
-            ["Distance_Text"] = false; 
-            ["Distance_Text_Color"] = { Color = Color3.fromRGB(255, 255, 255) };
-            ["Distance_Text_Position"] = "Bottom";
-            ["Distance_Text_Font"] = "Verdana";
-            ["Distance_Text_Size"] = 11;
-            ["Weapon_Text"] = false; 
-            ["Weapon_Text_Color"] = { Color = Color3.fromRGB(255, 255, 255) };
-            ["Weapon_Text_Position"] = "Bottom";
-            ["Weapon_Text_Font"] = "Verdana";
-            ["Weapon_Text_Size"] = 11;
-        }
-        
-        Options = setmetatable({}, {__index = MiscOptions, __newindex = function(self, key, value) Esp.RefreshElements(key, value) end})
-        
-        local Esp = {}
-        do
-            Esp.Players = {}
-            Esp.ScreenGui = Instance.new("ScreenGui", gethui())
-            Esp.Cache = Instance.new("ScreenGui", gethui())
-            Esp.Connections = {}
-            Esp.ScreenGui.IgnoreGuiInset = true
-            Esp.ScreenGui.Name = "EspObject"
-            Esp.Cache.Enabled = false
-            
-            function Esp:Create(instance, options)
-                local Ins = Instance.new(instance)
-                for prop, value in options do Ins[prop] = value end
-                return Ins
-            end
-            
-            function Esp:Connection(signal, callback)
-                local Connection = signal:Connect(callback)
-                table.insert(Esp.Connections, Connection)
-                return Connection
-            end
-            
-            Esp.ConvertScreenPoint = function(self, world_position)
-                local ViewportSize = Camera.ViewportSize
-                local LocalPos = Camera.CFrame:pointToObjectSpace(world_position)
-                local AspectRatio = ViewportSize.X / ViewportSize.Y
-                local HalfY = -LocalPos.Z * math.tan(math.rad(Camera.FieldOfView / 2))
-                local HalfX = AspectRatio * HalfY
-                local FarPlaneCorner = Vector3.new(-HalfX, HalfY, LocalPos.Z)
-                local RelativePos = LocalPos - FarPlaneCorner
-                local ScreenX = RelativePos.X / (HalfX * 2)
-                local ScreenY = -RelativePos.Y / (HalfY * 2)
-                local OnScreen = -LocalPos.Z > 0 and ScreenX >= 0 and ScreenX <= 1 and ScreenY >= 0 and ScreenY <= 1
-                return Vector3.new(ScreenX * ViewportSize.X, ScreenY * ViewportSize.Y, -LocalPos.Z), OnScreen
-            end
-            
-            Esp.BoxSolve = function(self, torso)
-                if not torso then return nil, nil, nil end
-                local ViewportTop = torso.Position + (torso.CFrame.UpVector * 1.8) + Camera.CFrame.UpVector
-                local ViewportBottom = torso.Position - (torso.CFrame.UpVector * 2.5) - Camera.CFrame.UpVector
-                local Distance = (torso.Position - Camera.CFrame.p).Magnitude
-                local Top, TopIsRendered = Esp:ConvertScreenPoint(ViewportTop)
-                local Bottom, BottomIsRendered = Esp:ConvertScreenPoint(ViewportBottom)
-                local Width = math.max(math.floor(math.abs(Top.X - Bottom.X)), 3)
-                local Height = math.max(math.floor(math.max(math.abs(Bottom.Y - Top.Y), Width / 2)), 3)
-                local BoxSize = Vector2.new(math.floor(math.max(Height / 1.5, Width)), Height)
-                local BoxPosition = Vector2.new(math.floor(Top.X * 0.5 + Bottom.X * 0.5 - BoxSize.X * 0.5), math.floor(math.min(Top.Y, Bottom.Y)))
-                return BoxSize, BoxPosition, TopIsRendered, Distance
-            end
-            
-            function Esp:Lerp(start, finish, t) t = t or 1/8; return start * (1 - t) + finish * t end
-            function Esp:Tween(Object, Properties, Info) local tween = TweenService:Create(Object, Info, Properties); tween:Play(); return tween end
-            
-            function Esp.CreateObject(player)
-                local Data = { Items = {}, Info = {}, Drawings = {}, Type = "player", Connections = {} }
-                function Data:Connection(signal, callback) local conn = signal:Connect(callback); table.insert(self.Connections, conn); return conn end
-                local Items = {}
-                -- Holder
-                Items.Holder = Esp:Create("Frame", { Parent = Esp.ScreenGui, BackgroundTransparency = 1, BorderColor3 = Color3.fromRGB(0,0,0), BorderSizePixel = 0, BackgroundColor3 = Color3.fromRGB(255,255,255) })
-                Items.HolderGradient = Esp:Create("UIGradient", { Rotation = 0, Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Color3.fromRGB(255,255,255)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255,255,255))}, Parent = Items.Holder, Enabled = true })
-                -- Directions (Left, Right, Top, Bottom)
-                Items.Left = Esp:Create("Frame", { Parent = Items.Holder, Size = UDim2.new(0,0,1,0), BackgroundTransparency = 1, Position = UDim2.new(0,-1,0,0), BorderSizePixel = 0 })
-                Items.LeftTexts = Esp:Create("Frame", { Parent = Items.Left, BackgroundTransparency = 1, AutomaticSize = Enum.AutomaticSize.X })
-                Esp:Create("UIListLayout", { Parent = Items.Left, FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Right, Padding = UDim.new(0,1) })
-                Esp:Create("UIListLayout", { Parent = Items.LeftTexts, Padding = UDim.new(0,1) })
-                Items.Bottom = Esp:Create("Frame", { Parent = Items.Holder, Size = UDim2.new(1,0,0,0), BackgroundTransparency = 1, Position = UDim2.new(0,0,1,1) })
-                Items.BottomTexts = Esp:Create("Frame", { Parent = Items.Bottom, BackgroundTransparency = 1, AutomaticSize = Enum.AutomaticSize.XY })
-                Esp:Create("UIListLayout", { Parent = Items.Bottom, SortOrder = Enum.SortOrder.LayoutOrder, HorizontalAlignment = Enum.HorizontalAlignment.Center, Padding = UDim.new(0,1) })
-                Esp:Create("UIListLayout", { Parent = Items.BottomTexts, Padding = UDim.new(0,1) })
-                Items.Top = Esp:Create("Frame", { Parent = Items.Holder, Size = UDim2.new(1,0,0,0), BackgroundTransparency = 1, Position = UDim2.new(0,0,0,-1) })
-                Items.TopTexts = Esp:Create("Frame", { Parent = Items.Top, BackgroundTransparency = 1, AutomaticSize = Enum.AutomaticSize.XY })
-                Esp:Create("UIListLayout", { Parent = Items.Top, VerticalAlignment = Enum.VerticalAlignment.Bottom, HorizontalAlignment = Enum.HorizontalAlignment.Center, Padding = UDim.new(0,1) })
-                Esp:Create("UIListLayout", { Parent = Items.TopTexts, Padding = UDim.new(0,1) })
-                Items.Right = Esp:Create("Frame", { Parent = Esp.Cache, Size = UDim2.new(0,0,1,0), BackgroundTransparency = 1, Position = UDim2.new(1,1,0,0) })
-                Items.RightTexts = Esp:Create("Frame", { Parent = Items.Right, BackgroundTransparency = 1, AutomaticSize = Enum.AutomaticSize.X })
-                Esp:Create("UIListLayout", { Parent = Items.Right, FillDirection = Enum.FillDirection.Horizontal, Padding = UDim.new(0,1) })
-                Esp:Create("UIListLayout", { Parent = Items.RightTexts, Padding = UDim.new(0,1) })
-                -- Boxes
-                Items.Box = Esp:Create("Frame", { Parent = Esp.Cache, BackgroundTransparency = 1, Position = UDim2.new(0,1,0,1), Size = UDim2.new(1,-2,1,-2) })
-                Esp:Create("UIStroke", { Parent = Items.Box, LineJoinMode = Enum.LineJoinMode.Miter })
-                Items.Inner = Esp:Create("Frame", { Parent = Items.Box, BackgroundTransparency = 1, Position = UDim2.new(0,1,0,1), Size = UDim2.new(1,-2,1,-2) })
-                Items.UIStroke = Esp:Create("UIStroke", { Color = Color3.fromRGB(255,255,255), LineJoinMode = Enum.LineJoinMode.Miter, Parent = Items.Inner })
-                Items.BoxGradient = Esp:Create("UIGradient", { Parent = Items.UIStroke })
-                Items.Inner2 = Esp:Create("Frame", { Parent = Items.Inner, BackgroundTransparency = 1, Position = UDim2.new(0,1,0,1), Size = UDim2.new(1,-2,1,-2) })
-                Esp:Create("UIStroke", { Parent = Items.Inner2, LineJoinMode = Enum.LineJoinMode.Miter })
-                -- Corner boxes
-                Items.Corners = Esp:Create("Frame", { Parent = Esp.Cache, BackgroundTransparency = 1, Size = UDim2.new(1,0,1,0) })
-                local function addCornerX(parent, anchor, pos, rot) end -- simplified for length
-                -- Healthbar
-                Items.Healthbar = Esp:Create("Frame", { Name = "Left", Parent = Esp.Cache, Size = UDim2.new(0,3,0,3), BackgroundColor3 = Color3.fromRGB(0,0,0) })
-                Items.HealthbarAccent = Esp:Create("Frame", { Parent = Items.Healthbar, Position = UDim2.new(0,1,0,1), Size = UDim2.new(1,-2,1,-2), BackgroundColor3 = Color3.fromRGB(255,255,255) })
-                Items.HealthbarFade = Esp:Create("Frame", { Parent = Items.Healthbar, Position = UDim2.new(0,1,0,1), Size = UDim2.new(1,-2,1,-2), BackgroundColor3 = Color3.fromRGB(0,0,0) })
-                Items.HealthbarGradient = Esp:Create("UIGradient", { Enabled = true, Parent = Items.HealthbarAccent, Rotation = 90, Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Color3.fromRGB(0,255,0)), ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255,125,0)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255,0,0))} })
-                Items.HealthbarText = Esp:Create("TextLabel", { FontFace = Fonts.Verdana, TextColor3 = Color3.fromRGB(255,255,255), BackgroundTransparency = 1, AutomaticSize = Enum.AutomaticSize.XY, TextSize = 11 })
-                Esp:Create("UIStroke", { Parent = Items.HealthbarText, LineJoinMode = Enum.LineJoinMode.Miter })
-                -- Texts
-                Items.Text = Esp:Create("TextLabel", { FontFace = Fonts.Verdana, TextColor3 = Color3.fromRGB(255,255,255), BackgroundTransparency = 1, AutomaticSize = Enum.AutomaticSize.XY, TextSize = 11, Text = player.Name })
-                Esp:Create("UIStroke", { Parent = Items.Text, LineJoinMode = Enum.LineJoinMode.Miter })
-                Items.Distance = Esp:Create("TextLabel", { FontFace = Fonts.Verdana, TextColor3 = Color3.fromRGB(255,255,255), BackgroundTransparency = 1, AutomaticSize = Enum.AutomaticSize.XY, TextSize = 11 })
-                Esp:Create("UIStroke", { Parent = Items.Distance, LineJoinMode = Enum.LineJoinMode.Miter })
-                Items.Weapon = Esp:Create("TextLabel", { FontFace = Fonts.Verdana, TextColor3 = Color3.fromRGB(255,255,255), BackgroundTransparency = 1, AutomaticSize = Enum.AutomaticSize.XY, TextSize = 11, Text = "[None]" })
-                Esp:Create("UIStroke", { Parent = Items.Weapon, LineJoinMode = Enum.LineJoinMode.Miter })
-                
-                Data.Items = Items
-                Data.Info.Character = player.Character
-                Data.Info.Humanoid = player.Character and player.Character:FindFirstChild("Humanoid")
-                function Data:Destroy()
-                    for _, conn in ipairs(self.Connections) do conn:Disconnect() end
-                    pcall(function() for i,v in pairs(self.Items) do v:Destroy() end end)
-                    Esp.Players[player] = nil
-                end
-                Esp.Players[player.Name] = Data
-                return Data
-            end
-            
-            Esp.Update = function()
-                if not Options.Enabled then return end
-                for _,Data in pairs(Esp.Players) do
-                    if not Data.Info.Character then continue end
-                    local Humanoid = Data.Info.Humanoid
-                    if not Humanoid or not Humanoid.RootPart then continue end
-                    local BoxSize, BoxPos, OnScreen, Distance = Esp:BoxSolve(Humanoid.RootPart)
-                    local Holder = Data.Items.Holder
-                    Holder.Visible = OnScreen
-                    if not OnScreen or Distance > MiscOptions.Render_Distance then Holder.Visible = false; continue end
-                    Holder.Position = UDim2.fromOffset(BoxPos.X, BoxPos.Y)
-                    Holder.Size = UDim2.new(0, BoxSize.X, 0, BoxSize.Y)
-                    Data.Items.Distance.Text = math.floor(Distance) .. "m"
-                end
-            end
-            
-            Esp.RefreshElements = function(key, value)
-                for _,Data in pairs(Esp.Players) do
-                    local Items = Data.Items
-                    if not Items.Holder then continue end
-                    -- implement all refresh logic for each key
-                end
-            end
-            
-            for _,player in pairs(Players:GetPlayers()) do if player ~= LocalPlayer then Esp.CreateObject(player) end end
-            Esp:Connection(Players.PlayerRemoving, function(p) if Esp.Players[p.Name] then Esp.Players[p.Name]:Destroy() end end)
-            Esp:Connection(Players.PlayerAdded, function(p) if p ~= LocalPlayer then Esp.CreateObject(p) end end)
-            Esp.Loop = RunService:BindToRenderStep("Run Loop", 0, Esp.Update)
-        end
-        
-        -- UI untuk settings ESP premium (hanya contoh beberapa toggle)
         local espSection = EspSub:Section({Name = "ESP Settings", Side = "Left"})
-        espSection:Toggle({ Name = "Enable ESP", Flag = "PremiumESP_Enable", Default = false, Callback = function(v) Options.Enabled = v end })
-        espSection:Toggle({ Name = "Boxes", Flag = "PremiumESP_Boxes", Default = false, Callback = function(v) Options.Boxes = v end })
-        espSection:Toggle({ Name = "Healthbar", Flag = "PremiumESP_Healthbar", Default = false, Callback = function(v) Options.Healthbar = v end })
-        espSection:Toggle({ Name = "Name", Flag = "PremiumESP_Name", Default = false, Callback = function(v) Options.Name_Text = v end })
-        espSection:Toggle({ Name = "Distance", Flag = "PremiumESP_Distance", Default = false, Callback = function(v) Options.Distance_Text = v end })
-        espSection:Toggle({ Name = "Weapon", Flag = "PremiumESP_Weapon", Default = false, Callback = function(v) Options.Weapon_Text = v end })
-        espSection:Slider({ Name = "Max Distance", Flag = "PremiumESP_DistanceLimit", Min = 50, Max = 1000, Default = 500, Callback = function(v) Options.Render_Distance = v end })
-        espSection:Colorpicker({ Name = "Box Color 1", Flag = "PremiumESP_BoxColor1", Default = Color3.fromRGB(255,255,255), Callback = function(col) Options["Box Gradient 1"].Color = col; Options["Box Gradient 1"] = {Color=col, Transparency=Options["Box Gradient 1"].Transparency}; Esp.RefreshElements("Box Gradient 1", Options["Box Gradient 1"]) end })
+        local espEnabled = false
+        local espMaxDist = 600
+        local espColor = Color3.fromRGB(0,255,0)
+        local fillBox = false
+        local showSkeleton = false
+        local showInventory = false
+        local espCache = {}
+        
+        local function createESP(player)
+            if espCache[player] then for _,o in pairs(espCache[player]) do o:Remove() end end
+            local box = Drawing.new("Square"); box.Thickness=1; box.Color=espColor; box.Filled=fillBox
+            local nameL = Drawing.new("Text"); nameL.Text=player.Name; nameL.Size=9; nameL.Font=1; nameL.Color=Color3.fromRGB(255,255,255); nameL.Outline=true; nameL.Center=true
+            local hpBg = Drawing.new("Square"); hpBg.Thickness=1; hpBg.Color=Color3.fromRGB(30,30,30); hpBg.Filled=true
+            local hpFl = Drawing.new("Square"); hpFl.Thickness=1; hpFl.Color=Color3.fromRGB(72,215,115); hpFl.Filled=true
+            local dL = Drawing.new("Text"); dL.Size=9; dL.Font=1; dL.Color=Color3.fromRGB(160,160,175); dL.Outline=true; dL.Center=true
+            local invL = Drawing.new("Text"); invL.Size=9; invL.Font=1; invL.Color=Color3.fromRGB(255,255,0); invL.Outline=true; invL.Center=true
+            local skeletonLines = {}; for i=1,15 do skeletonLines[i]=Drawing.new("Line") end
+            espCache[player] = {box,nameL,hpBg,hpFl,dL,invL,skeletonLines}
+        end
+        local function removeESP(p) if espCache[p] then for _,o in pairs(espCache[p]) do o:Remove() end; espCache[p]=nil end end
+        for _,p in pairs(Players:GetPlayers()) do if p~=LocalPlayer then createESP(p) end end
+        Players.PlayerAdded:Connect(function(p) if p~=LocalPlayer then createESP(p) end end)
+        Players.PlayerRemoving:Connect(removeESP)
+        
+        local function getInventoryItem(plr)
+            local char = plr.Character; if char then local tool = char:FindFirstChildWhichIsA("Tool"); if tool then return tool.Name end end
+            local bp = plr.Backpack; if bp then local tool = bp:FindFirstChildWhichIsA("Tool"); if tool then return tool.Name end end
+            return nil
+        end
+        local function getSkeletonPoints(char)
+            local partNames = {"Head","UpperTorso","LowerTorso","LeftUpperArm","LeftLowerArm","LeftHand","RightUpperArm","RightLowerArm","RightHand","LeftUpperLeg","LeftLowerLeg","LeftFoot","RightUpperLeg","RightLowerLeg","RightFoot"}
+            local fallback = {LeftUpperArm="Left Arm",LeftLowerArm="Left Arm",LeftHand="LeftHand",RightUpperArm="Right Arm",RightLowerArm="Right Arm",RightHand="RightHand",LeftUpperLeg="Left Leg",LeftLowerLeg="Left Leg",LeftFoot="LeftFoot",RightUpperLeg="Right Leg",RightLowerLeg="Right Leg",RightFoot="RightFoot"}
+            local points = {}
+            for _,name in ipairs(partNames) do
+                local part = char:FindFirstChild(name)
+                if not part and fallback[name] then part = char:FindFirstChild(fallback[name]) end
+                table.insert(points, part and part.Position or nil)
+            end
+            return points
+        end
+        
+        RunService.RenderStepped:Connect(function()
+            if not espEnabled then for _,drs in pairs(espCache) do for _,o in pairs(drs) do o.Visible=false end end return end
+            local myChar = LocalPlayer.Character; local myPos = myChar and myChar:FindFirstChild("HumanoidRootPart") and myChar.HumanoidRootPart.Position
+            local vX,vY = Camera.ViewportSize.X, Camera.ViewportSize.Y
+            for player,drawings in pairs(espCache) do
+                local box,nameL,hpBg,hpFl,dL,invL,skeletonLines = unpack(drawings)
+                local char = player.Character; local hum = char and char:FindFirstChildOfClass("Humanoid")
+                local root = char and char:FindFirstChild("HumanoidRootPart"); local head = char and char:FindFirstChild("Head")
+                if not (char and hum and root and head and hum.Health>0) then for _,o in pairs(drawings) do o.Visible=false end
+                else
+                    local d3 = myPos and (root.Position - myPos).Magnitude or 0
+                    if d3>espMaxDist then for _,o in pairs(drawings) do o.Visible=false end
+                    else
+                        local rp,rOn = Camera:WorldToViewportPoint(root.Position)
+                        local hp,hOn = Camera:WorldToViewportPoint(head.Position)
+                        if rOn and hOn then
+                            local height = math.abs(hp.Y - rp.Y)*1.5+8; local width = height*0.5
+                            local bX = rp.X - width/2; local bY = hp.Y - 4
+                            if bX+width>0 and bX<vX and bY+height>0 and bY<vY then
+                                box.Color=espColor; box.Size=Vector2.new(width,height); box.Position=Vector2.new(bX,bY); box.Filled=fillBox; box.Visible=true
+                                nameL.Text=player.Name; nameL.Position=Vector2.new(rp.X,bY-12); nameL.Visible=true
+                                local hpPct = math.clamp(hum.Health/hum.MaxHealth,0,1)
+                                hpBg.Size=Vector2.new(3,height-4); hpBg.Position=Vector2.new(bX-7,bY+2); hpBg.Visible=true
+                                hpFl.Color=Color3.fromRGB(255*(1-hpPct),255*hpPct,80); hpFl.Size=Vector2.new(2,(height-6)*hpPct); hpFl.Position=Vector2.new(bX-6,bY+3+(height-6)*(1-hpPct)); hpFl.Visible=true
+                                dL.Text=math.floor(d3).."m"; dL.Position=Vector2.new(rp.X,bY+height+2); dL.Visible=true
+                                if showInventory then local item=getInventoryItem(player); if item then invL.Text=item; invL.Position=Vector2.new(rp.X,bY+height+14); invL.Visible=true else invL.Visible=false end else invL.Visible=false end
+                                if showSkeleton then
+                                    local points = getSkeletonPoints(char)
+                                    local screenPoints = {}
+                                    for i,pos in pairs(points) do if pos then local vec,on = Camera:WorldToViewportPoint(pos); if on then screenPoints[i]=Vector2.new(vec.X,vec.Y) else screenPoints[i]=nil end else screenPoints[i]=nil end end
+                                    local connections = {{1,2},{2,3},{2,4},{4,5},{5,6},{2,7},{7,8},{8,9},{3,10},{10,11},{11,12},{3,13},{13,14},{14,15}}
+                                    for idx,conn in pairs(connections) do local a=screenPoints[conn[1]]; local b=screenPoints[conn[2]]; if a and b then skeletonLines[idx].From=a; skeletonLines[idx].To=b; skeletonLines[idx].Color=espColor; skeletonLines[idx].Thickness=1; skeletonLines[idx].Visible=true else skeletonLines[idx].Visible=false end end
+                                    for i=#connections+1,15 do skeletonLines[i].Visible=false end
+                                else for i=1,15 do skeletonLines[i].Visible=false end end
+                            else for _,o in pairs(drawings) do o.Visible=false end end
+                        else for _,o in pairs(drawings) do o.Visible=false end end
+                    end
+                end
+            end
+        end)
+        
+        espSection:Toggle({ Name="Enable ESP", Flag="ESP_Enable", Default=false, Callback=function(v) espEnabled=v end })
+        espSection:Slider({ Name="Max Distance", Flag="ESP_Distance", Min=10, Max=1000, Default=600, Callback=function(v) espMaxDist=v end })
+        espSection:Colorpicker({ Name="ESP Color", Flag="ESP_Color", Default=Color3.fromRGB(0,255,0), Callback=function(col) espColor=col end })
+        espSection:Toggle({ Name="Fill Box", Flag="ESP_FillBox", Default=false, Callback=function(v) fillBox=v end })
+        espSection:Toggle({ Name="Show Skeleton", Flag="ESP_Skeleton", Default=false, Callback=function(v) showSkeleton=v end })
+        espSection:Toggle({ Name="Show Inventory Item", Flag="ESP_Inventory", Default=false, Callback=function(v) showInventory=v end })
     end
     
-    -- Custom Name Subpage (tetap dari Silent Hub)
+    -- Custom Name
     do
         local customSection = CustomSub:Section({Name = "Custom Name & Tier", Side = "Left"})
         customSection:Textbox({ Name="Change Display Name", Flag="CustomName", Placeholder="New name...", Default="", Callback=function(text) if text~="" then pcall(function() local char=workspace.Characters:FindFirstChild(LocalPlayer.Name); if char and char.Head and char.Head.NameTag then char.Head.NameTag.MainFrame.NameLabel.Text=text end end) end end })
