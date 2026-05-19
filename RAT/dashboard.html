@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+  <title>VAULT DASHBOARD</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width:100%; height:100%; font-family:'Orbitron',sans-serif; background:#0a0a0c; color:#d0d0dc; overflow:hidden; }
+
+    /* BG VIDEO */
+    #bg-video { position:fixed; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:0; opacity:0.22; filter:grayscale(55%) brightness(0.4); pointer-events:none; }
+    .bg-overlay { position:fixed; inset:0; background:linear-gradient(135deg,rgba(6,6,10,0.92),rgba(14,14,20,0.94)); z-index:1; pointer-events:none; }
+
+    .app { display:flex; flex-direction:column; height:100vh; height:100dvh; position:relative; z-index:2; }
+
+    /* HEADER */
+    .header { display:flex; align-items:center; justify-content:space-between; padding:14px 18px 10px; border-bottom:1px solid rgba(160,160,180,0.08); flex-shrink:0; background:rgba(8,8,12,0.6); backdrop-filter:blur(16px); }
+    .header-logo { font-size:13px; font-weight:900; letter-spacing:5px; color:#d8d8e4; text-shadow:0 0 18px rgba(220,220,240,0.28); }
+    .header-status { display:flex; align-items:center; gap:6px; font-size:7px; letter-spacing:2px; color:rgba(140,140,160,0.5); }
+    .status-dot { width:6px; height:6px; border-radius:50%; background:#4cde80; box-shadow:0 0 8px rgba(76,222,128,0.8); animation:dotPulse 2s ease-in-out infinite; }
+    @keyframes dotPulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+    /* CONTENT */
+    .content { flex:1; overflow-y:auto; overflow-x:hidden; position:relative; }
+    .content::-webkit-scrollbar { width:2px; }
+    .content::-webkit-scrollbar-thumb { background:rgba(160,160,180,0.12); border-radius:2px; }
+
+    .page { display:none; padding:14px; }
+    .page.active { display:block; }
+
+    /* SECTION */
+    .sec-title { font-size:7.5px; letter-spacing:3px; color:rgba(140,140,165,0.45); text-transform:uppercase; margin:14px 0 8px; }
+
+    /* CARD */
+    .card { background:rgba(14,14,18,0.75); border:1px solid rgba(140,140,160,0.1); border-radius:14px; padding:14px 16px; margin-bottom:10px; position:relative; overflow:hidden; backdrop-filter:blur(10px); }
+    .card::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,rgba(200,200,220,0.12),transparent); }
+    .card-title { font-size:8px; letter-spacing:2.5px; color:rgba(160,160,185,0.55); margin-bottom:10px; text-transform:uppercase; }
+
+    /* SUB TABS */
+    .sub-tabs { display:flex; gap:8px; margin-bottom:14px; }
+    .sub-tab { flex:1; padding:8px; border-radius:8px; border:1px solid rgba(140,140,160,0.12); background:rgba(14,14,18,0.6); font-family:'Orbitron',sans-serif; font-size:8px; letter-spacing:2px; color:rgba(140,140,165,0.45); cursor:pointer; text-align:center; transition:all 0.25s; -webkit-tap-highlight-color:transparent; outline:none; }
+    .sub-tab.active { border-color:rgba(200,200,220,0.28); color:#d0d0dc; background:rgba(22,22,28,0.9); }
+
+    /* DEVICE */
+    .device-item { display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:10px; border:1px solid rgba(140,140,160,0.1); background:rgba(12,12,16,0.7); margin-bottom:8px; cursor:pointer; transition:all 0.2s; -webkit-tap-highlight-color:transparent; }
+    .device-item.selected { border-color:rgba(200,200,220,0.3); background:rgba(20,20,26,0.9); box-shadow:0 0 12px rgba(200,200,220,0.06); }
+    .device-info { display:flex; align-items:center; gap:10px; }
+    .device-icon { width:32px; height:32px; border-radius:8px; background:rgba(22,22,28,0.9); border:1px solid rgba(140,140,160,0.12); display:flex; align-items:center; justify-content:center; font-size:14px; }
+    .device-name { font-size:10px; font-weight:700; letter-spacing:1px; color:#c8c8d8; margin-bottom:3px; }
+    .device-meta { font-size:7px; letter-spacing:1.5px; color:rgba(130,130,150,0.5); }
+    .device-right { display:flex; align-items:center; gap:8px; }
+    .battery-wrap { display:flex; align-items:center; gap:4px; font-size:8px; }
+    .battery-bar { width:22px; height:10px; border:1px solid rgba(160,160,180,0.3); border-radius:2px; padding:1.5px; position:relative; }
+    .battery-bar::after { content:''; position:absolute; right:-4px; top:50%; transform:translateY(-50%); width:3px; height:5px; background:rgba(160,160,180,0.3); border-radius:0 1px 1px 0; }
+    .battery-fill { height:100%; border-radius:1px; background:#4cde80; box-shadow:0 0 4px rgba(76,222,128,0.5); }
+    .battery-fill.low { background:#f06060; box-shadow:0 0 4px rgba(240,96,96,0.5); }
+    .battery-fill.mid { background:#f0c060; box-shadow:0 0 4px rgba(240,192,96,0.5); }
+    .battery-fill.charging { animation:chargePulse 1s ease-in-out infinite; }
+    @keyframes chargePulse { 0%,100%{opacity:0.7} 50%{opacity:1} }
+    .online-badge { font-size:6px; letter-spacing:1.5px; padding:3px 6px; border-radius:4px; background:rgba(76,222,128,0.1); border:1px solid rgba(76,222,128,0.22); color:rgba(76,222,128,0.9); }
+
+    /* INFO GRID */
+    .info-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .info-cell { background:rgba(12,12,16,0.7); border:1px solid rgba(140,140,160,0.09); border-radius:10px; padding:10px 12px; }
+    .info-label { font-size:6.5px; letter-spacing:2px; color:rgba(130,130,150,0.45); margin-bottom:5px; text-transform:uppercase; }
+    .info-val { font-size:10px; font-weight:700; letter-spacing:1px; color:#c0c0d0; word-break:break-all; }
+    .info-val.green { color:#4cde80; text-shadow:0 0 8px rgba(76,222,128,0.35); }
+    .info-val.red   { color:#f06060; text-shadow:0 0 8px rgba(240,96,96,0.35); }
+    .info-val.yellow{ color:#f0c060; text-shadow:0 0 8px rgba(240,192,96,0.35); }
+
+    /* APK */
+    .apk-status { display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:10px; border:1px solid rgba(76,222,128,0.18); background:rgba(76,222,128,0.05); margin-bottom:8px; }
+    .apk-name { font-size:9px; font-weight:700; letter-spacing:1.5px; color:#c0c0d0; margin-bottom:3px; }
+    .apk-version { font-size:7px; letter-spacing:1.5px; color:rgba(130,130,150,0.45); }
+    .apk-badge { margin-left:auto; font-size:7px; letter-spacing:1.5px; padding:4px 8px; border-radius:5px; background:rgba(76,222,128,0.1); border:1px solid rgba(76,222,128,0.22); color:rgba(76,222,128,0.9); }
+
+    /* TOGGLE */
+    .toggle-row { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid rgba(140,140,160,0.06); }
+    .toggle-row:last-child { border-bottom:none; }
+    .toggle-label { font-size:9px; letter-spacing:1.5px; color:#b8b8c8; }
+    .toggle-sub { font-size:7px; letter-spacing:1px; color:rgba(130,130,150,0.4); margin-top:2px; }
+    .switch { position:relative; width:40px; height:22px; flex-shrink:0; }
+    .switch input { opacity:0; width:0; height:0; }
+    .slider-sw { position:absolute; inset:0; border-radius:22px; background:rgba(36,36,44,0.9); border:1px solid rgba(140,140,160,0.15); cursor:pointer; transition:all 0.3s; }
+    .slider-sw::before { content:''; position:absolute; width:16px; height:16px; left:2px; top:2px; border-radius:50%; background:rgba(150,150,170,0.5); transition:all 0.3s; }
+    input:checked + .slider-sw { background:rgba(76,222,128,0.12); border-color:rgba(76,222,128,0.35); }
+    input:checked + .slider-sw::before { transform:translateX(18px); background:#4cde80; box-shadow:0 0 8px rgba(76,222,128,0.6); }
+
+    /* BUTTONS */
+    .btn { display:block; width:100%; padding:11px; border-radius:9px; border:1px solid rgba(160,160,185,0.18); background:rgba(18,18,24,0.92); color:#c0c0d0; font-family:'Orbitron',sans-serif; font-size:9px; letter-spacing:3px; font-weight:700; cursor:pointer; text-align:center; transition:border-color 0.2s, color 0.2s; margin-top:8px; -webkit-tap-highlight-color:transparent; outline:none; }
+    .btn:active { transform:scale(0.98); }
+    .btn.danger { border-color:rgba(240,96,96,0.22); color:rgba(235,110,110,0.9); }
+    .btn.success { border-color:rgba(76,222,128,0.22); color:rgba(76,222,128,0.9); }
+    .btn.warn { border-color:rgba(240,192,96,0.22); color:rgba(240,200,100,0.9); }
+    .torch-row { display:flex; gap:8px; }
+    .torch-row .btn { flex:1; }
+
+    /* FIELD */
+    .field-wrap { margin-bottom:10px; }
+    .field-label { font-size:7px; letter-spacing:2px; color:rgba(140,140,160,0.45); margin-bottom:5px; text-transform:uppercase; }
+    .field-input { width:100%; background:rgba(12,12,16,0.9); border:1px solid rgba(120,120,140,0.15); border-radius:8px; color:#c8c8d8; font-family:'Orbitron',sans-serif; font-size:10px; letter-spacing:1.5px; padding:10px 12px; outline:none; transition:border-color 0.3s; -webkit-tap-highlight-color:transparent; }
+    .field-input:focus { border-color:rgba(200,200,220,0.28); }
+    .field-select { width:100%; background:rgba(12,12,16,0.9); border:1px solid rgba(120,120,140,0.15); border-radius:8px; color:#c8c8d8; font-family:'Orbitron',sans-serif; font-size:9px; letter-spacing:1px; padding:10px 12px; outline:none; cursor:pointer; appearance:none; -webkit-appearance:none; -webkit-tap-highlight-color:transparent; }
+    .range-slider { width:100%; height:3px; border-radius:3px; background:rgba(140,140,160,0.12); outline:none; appearance:none; -webkit-appearance:none; cursor:pointer; margin:8px 0; }
+    .range-slider::-webkit-slider-thumb { appearance:none; -webkit-appearance:none; width:16px; height:16px; border-radius:50%; background:#d0d0e0; border:2px solid rgba(200,200,220,0.35); box-shadow:0 0 6px rgba(200,200,220,0.25); }
+    .time-row { display:flex; gap:8px; }
+    .time-row .field-wrap { flex:1; }
+    .ip-row { display:flex; gap:8px; margin-bottom:10px; }
+    .ip-row .field-input { flex:1; }
+    .ip-row .btn { width:auto; padding:10px 14px; margin-top:0; font-size:7px; letter-spacing:2px; flex-shrink:0; }
+
+    /* VIBRATION OPTIONS */
+    .vib-options { display:flex; gap:8px; margin-top:8px; }
+    .vib-opt { flex:1; padding:9px 6px; border-radius:8px; border:1px solid rgba(140,140,160,0.12); background:rgba(12,12,16,0.7); font-family:'Orbitron',sans-serif; font-size:7px; letter-spacing:1.5px; color:rgba(130,130,155,0.45); cursor:pointer; text-align:center; transition:all 0.2s; -webkit-tap-highlight-color:transparent; }
+    .vib-opt.active { border-color:rgba(200,200,220,0.28); color:#d0d0dc; background:rgba(22,22,28,0.9); }
+
+    /* CAMERA */
+    .cam-options { display:flex; gap:8px; margin-top:8px; }
+    .cam-opt { flex:1; padding:10px; border-radius:8px; border:1px solid rgba(140,140,160,0.12); background:rgba(12,12,16,0.7); font-family:'Orbitron',sans-serif; font-size:7.5px; letter-spacing:1.5px; color:rgba(130,130,155,0.45); cursor:pointer; text-align:center; transition:all 0.2s; display:flex; flex-direction:column; align-items:center; gap:5px; -webkit-tap-highlight-color:transparent; }
+    .cam-opt span { font-size:18px; }
+    .cam-opt.active { border-color:rgba(200,200,220,0.28); color:#d0d0dc; background:rgba(22,22,28,0.9); }
+    #cameraPreview { width:100%; border-radius:12px; margin-top:12px; display:none; border:1px solid rgba(140,140,160,0.1); }
+
+    /* LOCK ADMIN UI */
+    .lock-menu-tabs { display:flex; gap:6px; margin-bottom:12px; }
+    .lock-menu-tab { flex:1; padding:8px 4px; border-radius:8px; border:1px solid rgba(140,140,160,0.12); background:rgba(14,14,18,0.6); font-family:'Orbitron',sans-serif; font-size:7px; letter-spacing:1.5px; color:rgba(130,130,155,0.45); cursor:pointer; text-align:center; transition:all 0.22s; -webkit-tap-highlight-color:transparent; }
+    .lock-menu-tab.active { border-color:rgba(200,200,220,0.28); color:#d0d0dc; background:rgba(22,22,28,0.92); }
+    .lock-panel { display:none; }
+    .lock-panel.active { display:block; }
+
+    /* LOCK ADMIN HEADER */
+    .lock-admin-header { display:flex; align-items:center; gap:12px; padding:14px 16px; border-radius:12px; border:1px solid rgba(240,96,96,0.18); background:rgba(240,96,96,0.05); margin-bottom:12px; }
+    .lock-admin-icon { font-size:28px; filter:drop-shadow(0 0 10px rgba(240,96,96,0.45)); }
+    .lock-admin-icon.unlocked { filter:drop-shadow(0 0 10px rgba(76,222,128,0.45)); }
+    .lock-admin-info { flex:1; }
+    .lock-admin-status { font-size:11px; font-weight:900; letter-spacing:3px; color:#f06060; margin-bottom:3px; }
+    .lock-admin-status.unlocked { color:#4cde80; }
+    .lock-admin-sub { font-size:7px; letter-spacing:2px; color:rgba(130,130,150,0.45); }
+    .lock-admin-badge { font-size:7px; letter-spacing:1.5px; padding:4px 8px; border-radius:5px; background:rgba(240,96,96,0.1); border:1px solid rgba(240,96,96,0.2); color:rgba(240,96,96,0.8); }
+    .lock-admin-badge.ok { background:rgba(76,222,128,0.1); border-color:rgba(76,222,128,0.2); color:rgba(76,222,128,0.8); }
+
+    /* WELCOME */
+    .welcome-screen { display:flex; flex-direction:column; align-items:center; padding:24px 20px 18px; text-align:center; }
+    .welcome-title { font-size:15px; font-weight:900; letter-spacing:4px; color:#d8d8e4; margin-bottom:5px; text-shadow:0 0 20px rgba(210,210,230,0.22); animation:fadeUpIn 0.8s cubic-bezier(.22,1,.36,1) both; }
+    .welcome-sub { font-size:8px; letter-spacing:3px; color:rgba(140,140,160,0.4); animation:fadeUpIn 0.8s 0.1s cubic-bezier(.22,1,.36,1) both; }
+    @keyframes fadeUpIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+    /* FEAT TABS */
+    .feat-tabs { display:flex; gap:8px; margin-bottom:14px; }
+    .feat-tab { flex:1; padding:9px; border-radius:9px; border:1px solid rgba(140,140,160,0.12); background:rgba(14,14,18,0.6); font-family:'Orbitron',sans-serif; font-size:8px; letter-spacing:2px; color:rgba(130,130,155,0.45); cursor:pointer; text-align:center; transition:all 0.22s; -webkit-tap-highlight-color:transparent; }
+    .feat-tab.active { border-color:rgba(200,200,220,0.28); color:#d0d0dc; background:rgba(22,22,28,0.92); }
+
+    /* CREDIT */
+    .credit-wrap { display:flex; flex-direction:column; align-items:center; padding:30px 20px; text-align:center; }
+    .credit-avatar { width:80px; height:80px; border-radius:20px; overflow:hidden; border:1.5px solid rgba(160,160,180,0.18); background:rgba(20,20,26,0.9); margin-bottom:16px; position:relative; }
+    .credit-avatar::after { content:''; position:absolute; inset:-5px; border-radius:25px; border:1px solid rgba(200,200,220,0.12); animation:ringPulse 2.5s ease-in-out infinite; pointer-events:none; }
+    .credit-avatar img { width:100%; height:100%; object-fit:cover; display:block; }
+    @keyframes ringPulse { 0%,100%{opacity:0.3;transform:scale(1)} 50%{opacity:0.8;transform:scale(1.03)} }
+    .credit-name { font-size:14px; font-weight:900; letter-spacing:4px; color:#d8d8e4; margin-bottom:5px; text-shadow:0 0 14px rgba(210,210,230,0.2); }
+    .credit-role { font-size:8px; letter-spacing:3px; color:rgba(140,140,160,0.45); margin-bottom:20px; }
+    .credit-divider { width:60px; height:1px; background:rgba(160,160,180,0.1); margin:0 auto 20px; }
+    .credit-item { display:flex; align-items:center; justify-content:space-between; width:100%; padding:10px 14px; border-radius:10px; border:1px solid rgba(140,140,160,0.09); background:rgba(14,14,18,0.7); margin-bottom:8px; }
+    .credit-item-label { font-size:7px; letter-spacing:2px; color:rgba(130,130,150,0.45); }
+    .credit-item-val { font-size:9px; letter-spacing:1.5px; color:#b8b8c8; }
+    .credit-copy { font-size:7px; letter-spacing:2px; color:rgba(120,120,140,0.3); margin-top:24px; }
+
+    /* SELECT DEVICE PROMPT */
+    .select-prompt { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px 20px; text-align:center; gap:10px; }
+    .select-prompt-icon { font-size:32px; opacity:0.4; }
+    .select-prompt-text { font-size:9px; letter-spacing:3px; color:rgba(140,140,160,0.4); }
+
+    /* TABBAR */
+    .tabbar { flex-shrink:0; display:flex; align-items:flex-end; justify-content:center; padding:8px 24px 14px; border-top:1px solid rgba(140,140,160,0.07); background:rgba(8,8,12,0.88); backdrop-filter:blur(20px); }
+    .tab-btn { display:flex; flex-direction:column; align-items:center; gap:4px; padding:6px 20px; cursor:pointer; border:none; background:none; position:relative; -webkit-tap-highlight-color:transparent; outline:none; }
+    .tab-btn.center-tab { padding:0 16px; margin-top:-14px; }
+    .tab-icon { width:24px; height:24px; display:flex; align-items:center; justify-content:center; font-size:16px; color:rgba(120,120,148,0.4); transition:color 0.22s; }
+    .tab-btn.active .tab-icon { color:#d0d0dc; }
+    .tab-label { font-family:'Orbitron',sans-serif; font-size:6px; letter-spacing:1.5px; color:rgba(110,110,140,0.38); transition:color 0.22s; }
+    .tab-btn.active .tab-label { color:rgba(200,200,220,0.75); }
+    .center-tab-inner { width:54px; height:54px; border-radius:16px; background:rgba(18,18,24,0.95); border:1px solid rgba(150,150,175,0.2); display:flex; align-items:center; justify-content:center; transition:all 0.22s; position:relative; }
+    .center-tab-inner::before { content:''; position:absolute; inset:-1px; border-radius:17px; background:linear-gradient(135deg,rgba(160,160,185,0.18),transparent,rgba(160,160,185,0.13)); -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0); mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; animation:borderPulse 3s ease-in-out infinite; }
+    @keyframes borderPulse { 0%,100%{opacity:0.38} 50%{opacity:1} }
+    .tab-btn.center-tab.active .center-tab-inner { border-color:rgba(200,200,225,0.35); }
+    .dot-grid { display:grid; grid-template-columns:repeat(2,6px); gap:4px; }
+    .dot-grid span { width:6px; height:6px; border-radius:2px; background:rgba(130,130,158,0.45); transition:background 0.22s; }
+    .tab-btn.center-tab.active .dot-grid span { background:#d0d0dc; }
+    .tab-btn::after { content:''; position:absolute; bottom:-8px; left:50%; transform:translateX(-50%); width:0; height:2px; border-radius:2px; background:rgba(200,200,220,0.55); transition:width 0.28s; }
+    .tab-btn.active::after { width:18px; }
+
+    /* NEON GLOW ACCENTS */
+    .neon-border { border-color:rgba(200,200,230,0.22) !important; box-shadow:0 0 12px rgba(200,200,230,0.08); }
+
+    /* TOAST */
+    .toast { position:fixed; bottom:90px; left:50%; transform:translateX(-50%); background:rgba(18,18,24,0.95); border:1px solid rgba(160,160,185,0.18); border-radius:10px; padding:10px 18px; font-size:8px; letter-spacing:2px; color:#c8c8d8; z-index:9000; opacity:0; transition:opacity 0.3s; white-space:nowrap; backdrop-filter:blur(12px); pointer-events:none; }
+    .toast.show { opacity:1; }
+
+    /* LOCK OVERLAY */
+    .lock-overlay { position:fixed; inset:0; z-index:8000; display:flex; align-items:center; justify-content:center; background:rgba(4,4,6,0.97); backdrop-filter:blur(20px); display:none; }
+    .lock-overlay.show { display:flex; }
+    .lock-overlay-inner { background:rgba(14,14,18,0.95); border:1px solid rgba(240,96,96,0.25); border-radius:24px; padding:36px 32px; text-align:center; width:300px; max-width:calc(100vw - 40px); }
+    .lock-overlay-icon { font-size:42px; margin-bottom:16px; filter:drop-shadow(0 0 14px rgba(240,96,96,0.5)); }
+    .lock-overlay-title { font-size:13px; font-weight:900; letter-spacing:4px; color:#f06060; margin-bottom:6px; text-shadow:0 0 16px rgba(240,96,96,0.4); }
+    .lock-overlay-sub { font-size:7.5px; letter-spacing:2.5px; color:rgba(150,150,170,0.5); margin-bottom:20px; }
+    .lock-overlay-msg { font-size:11px; letter-spacing:2px; color:#d0d0dc; margin-bottom:20px; padding:12px; border-radius:10px; border:1px solid rgba(140,140,160,0.12); background:rgba(10,10,14,0.8); }
+    .blank-overlay { position:fixed; inset:0; z-index:8000; background:#ffffff; display:none; }
+    .blank-overlay.show { display:block; }
+  </style>
+</head>
+<body>
+  <video id="bg-video" autoplay muted loop playsinline><source src="bg.mp4" type="video/mp4"/></video>
+  <div class="bg-overlay"></div>
+
+  <!-- LOCK OVERLAY -->
+  <div class="lock-overlay" id="lockOverlay">
+    <div class="lock-overlay-inner">
+      <div class="lock-overlay-icon">🔒</div>
+      <div class="lock-overlay-title">DEVICE LOCKED</div>
+      <div class="lock-overlay-sub" id="lockOverlaySub">ENTER PIN TO UNLOCK</div>
+      <div class="lock-overlay-msg" id="lockOverlayMsg"></div>
+      <div class="field-wrap">
+        <input class="field-input" id="unlockPinInput" type="password" maxlength="6" placeholder="ENTER PIN" style="text-align:center;letter-spacing:6px;font-size:16px;"/>
+      </div>
+      <button class="btn danger" onclick="tryUnlock()">UNLOCK</button>
+    </div>
+  </div>
+
+  <!-- BLANK OVERLAY -->
+  <div class="blank-overlay" id="blankOverlay">
+    <button style="position:absolute;bottom:40px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.3);color:white;font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:2px;padding:10px 20px;border-radius:8px;cursor:pointer;" onclick="removeBlank()">DISMISS</button>
+  </div>
+
+  <div class="app">
+    <div class="header">
+      <div class="header-logo">VAULT</div>
+      <div class="header-status"><div class="status-dot"></div><span>SYSTEM ONLINE</span></div>
+    </div>
+
+    <div class="content">
+
+      <!-- PAGE DEVICE -->
+      <div class="page active" id="page-device">
+        <div class="sub-tabs">
+          <div class="sub-tab active" onclick="switchSub('online',this)">● ONLINE</div>
+          <div class="sub-tab" onclick="switchSub('offline',this)">○ OFFLINE / IP</div>
+        </div>
+
+        <!-- ONLINE -->
+        <div id="sub-online">
+          <div class="sec-title">SELECT DEVICE</div>
+          <div id="onlineDeviceList"></div>
+
+          <div id="deviceDetails" style="display:none">
+            <div class="sec-title">DEVICE INFO</div>
+            <div class="card">
+              <div class="card-title">CONNECTION</div>
+              <div class="info-grid" id="connGrid"></div>
+            </div>
+            <div class="card">
+              <div class="card-title">NETWORK</div>
+              <div class="info-grid" id="netGrid"></div>
+            </div>
+            <div class="sec-title">APK STATUS</div>
+            <div id="apkStatus"></div>
+            <div class="sec-title">ANTI UNINSTALL</div>
+            <div class="card">
+              <div class="toggle-row">
+                <div><div class="toggle-label">ANTI UNINSTALL</div><div class="toggle-sub">REQUEST DEVICE ADMIN</div></div>
+                <label class="switch"><input type="checkbox" id="antiUninstall" onchange="handleAntiUninstall(this)"/><span class="slider-sw"></span></label>
+              </div>
+              <div class="toggle-row">
+                <div><div class="toggle-label">HIDE ICON</div><div class="toggle-sub">REMOVE FROM HOME SCREEN</div></div>
+                <label class="switch"><input type="checkbox" id="hideIcon" onchange="handleHideIcon(this)"/><span class="slider-sw"></span></label>
+              </div>
+            </div>
+          </div>
+
+          <div id="noDevicePrompt" class="select-prompt" style="display:none">
+            <div class="select-prompt-icon">📱</div>
+            <div class="select-prompt-text">PILIH DEVICE UNTUK AKSES</div>
+          </div>
+        </div>
+
+        <!-- OFFLINE/IP -->
+        <div id="sub-offline" style="display:none">
+          <div class="card neon-border">
+            <div class="card-title">IP ADDRESS CONNECTION</div>
+            <div class="field-wrap">
+              <div class="field-label">TARGET IP</div>
+              <div class="ip-row">
+                <input class="field-input" id="ipInput" type="text" placeholder="192.168.1.xxx"/>
+                <button class="btn" onclick="connectIP()" style="margin-top:0">CONNECT</button>
+              </div>
+            </div>
+            <div class="field-wrap">
+              <div class="field-label">PORT</div>
+              <input class="field-input" type="number" id="portInput" placeholder="8080"/>
+            </div>
+          </div>
+          <div id="offlineDeviceInfo" style="display:none">
+            <div class="sec-title">CONNECTED DEVICE</div>
+            <div id="offlineDeviceCard"></div>
+            <div class="card">
+              <div class="card-title">NETWORK</div>
+              <div class="info-grid" id="offlineNetGrid"></div>
+            </div>
+            <div class="sec-title">APK STATUS</div>
+            <div class="apk-status"><div style="font-size:18px">📦</div><div><div class="apk-name">VAULT AGENT</div><div class="apk-version">IP MODE</div></div><div class="apk-badge">CONNECTED</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE FEATURE -->
+      <div class="page" id="page-feature">
+        <div class="welcome-screen">
+          <div class="welcome-title">WELCOME TO DASHBOARD</div>
+          <div class="welcome-sub">SELECT MODULE BELOW</div>
+        </div>
+
+        <div id="featureSelectPrompt" class="select-prompt">
+          <div class="select-prompt-icon">⚡</div>
+          <div class="select-prompt-text">SELECT DEVICE FIRST</div>
+        </div>
+
+        <div id="featureContent" style="display:none">
+          <div class="feat-tabs">
+            <div class="feat-tab active" onclick="switchFeat('tes1',this)">TES 1 · ONLINE</div>
+            <div class="feat-tab" onclick="switchFeat('tes2',this)">TES 2 · OFFLINE</div>
+          </div>
+
+          <!-- TES 1 -->
+          <div id="feat-tes1">
+            <div class="sec-title">FLASHLIGHT</div>
+            <div class="card"><div class="card-title">SENTER REAL</div>
+              <div class="torch-row">
+                <button class="btn warn" onclick="startTorch()">💡 NYALAKAN</button>
+                <button class="btn danger" onclick="stopTorch()">🔦 MATIKAN</button>
+              </div>
+            </div>
+
+            <div class="sec-title">SENTER KEDIP</div>
+            <div class="card"><div class="card-title">STROBE LIGHT</div>
+              <div class="field-label">KECEPATAN: <span id="strobeVal">500</span>ms</div>
+              <div class="slider-wrap"><input class="range-slider" type="range" min="50" max="2000" value="500" oninput="document.getElementById('strobeVal').textContent=this.value"/></div>
+              <div class="torch-row">
+                <button class="btn warn" onclick="startStrobe()">⚡ MULAI KEDIP</button>
+                <button class="btn danger" onclick="stopStrobe()">■ STOP</button>
+              </div>
+            </div>
+
+            <div class="sec-title">CAMERA ACCESS</div>
+            <div class="card"><div class="card-title">KAMERA DEVICE</div>
+              <div class="cam-options">
+                <div class="cam-opt active" onclick="selCam(this,'user')"><span>🤳</span>DEPAN</div>
+                <div class="cam-opt" onclick="selCam(this,'environment')"><span>📷</span>BELAKANG</div>
+              </div>
+              <button class="btn" onclick="requestCamera()" style="margin-top:10px">AKSES KAMERA</button>
+              <button class="btn danger" onclick="stopCamera()" style="margin-top:6px">STOP KAMERA</button>
+              <video id="cameraPreview" autoplay playsinline></video>
+            </div>
+
+            <div class="sec-title">KIRIM GETARAN</div>
+            <div class="card"><div class="card-title">VIBRATION CONTROL</div>
+              <div class="vib-options">
+                <div class="vib-opt active" onclick="selVib(this,100)">RINGAN</div>
+                <div class="vib-opt" onclick="selVib(this,400)">SEDANG</div>
+                <div class="vib-opt" onclick="selVib(this,900)">KERAS</div>
+              </div>
+              <button class="btn" onclick="triggerVibration()" style="margin-top:10px">KIRIM GETARAN</button>
+            </div>
+
+            <div class="sec-title">LOCK CONTROL</div>
+            <div class="card neon-border">
+              <div id="lockAdminHeader" class="lock-admin-header">
+                <div class="lock-admin-icon unlocked" id="lockAdminIcon">🔓</div>
+                <div class="lock-admin-info">
+                  <div class="lock-admin-status unlocked" id="lockAdminStatus">UNLOCKED</div>
+                  <div class="lock-admin-sub" id="lockAdminSub">DEVICE TIDAK TERKUNCI</div>
+                </div>
+                <div class="lock-admin-badge ok" id="lockAdminBadge">CLEAR</div>
+              </div>
+
+              <div class="lock-menu-tabs">
+                <div class="lock-menu-tab active" onclick="switchLockMenu('prank',this)">PRANK</div>
+                <div class="lock-menu-tab" onclick="switchLockMenu('pin',this)">LOCK PIN</div>
+                <div class="lock-menu-tab" onclick="switchLockMenu('blank',this)">BLANK</div>
+              </div>
+
+              <!-- PRANK -->
+              <div class="lock-panel active" id="lockPanel-prank">
+                <div class="field-wrap">
+                  <div class="field-label">DURASI: <span id="prankDurVal">20</span> DETIK</div>
+                  <input class="range-slider" type="range" min="20" max="1000" value="20" oninput="document.getElementById('prankDurVal').textContent=this.value; prankDuration=parseInt(this.value)"/>
+                </div>
+                <div class="field-wrap">
+                  <div class="field-label">HTML CONTENT</div>
+                  <select class="field-select" id="prankHtmlType">
+                    <option value="block">BLOKIR SEMUA APLIKASI (TERMASUK SYSTEM)</option>
+                    <option value="prank_setting">PRANK SETTING</option>
+                  </select>
+                </div>
+                <button class="btn danger" onclick="activatePrank()">⚡ AKTIFKAN PRANK</button>
+              </div>
+
+              <!-- LOCK PIN -->
+              <div class="lock-panel" id="lockPanel-pin">
+                <div class="field-wrap">
+                  <div class="field-label">DURASI LOCK: <span id="pinDurVal">60</span> DETIK</div>
+                  <input class="range-slider" type="range" min="10" max="3600" value="60" oninput="document.getElementById('pinDurVal').textContent=this.value; pinLockDuration=parseInt(this.value)"/>
+                </div>
+                <div class="field-wrap">
+                  <div class="field-label">PESAN KE TARGET</div>
+                  <input class="field-input" id="pinLockMsg" placeholder="Device anda dikunci..." type="text"/>
+                </div>
+                <div class="field-wrap">
+                  <div class="field-label">SET PIN (6 DIGIT)</div>
+                  <input class="field-input" id="pinLockCode" type="password" maxlength="6" placeholder="123456"/>
+                </div>
+                <button class="btn danger" onclick="activatePinLock()">🔒 LOCK DENGAN PIN</button>
+                <button class="btn success" onclick="deactivateLock()" style="margin-top:6px">🔓 UNLOCK</button>
+              </div>
+
+              <!-- BLANK -->
+              <div class="lock-panel" id="lockPanel-blank">
+                <div class="field-wrap">
+                  <div class="field-label">DURASI: <span id="blankDurVal">30</span> DETIK</div>
+                  <input class="range-slider" type="range" min="5" max="1000" value="30" oninput="document.getElementById('blankDurVal').textContent=this.value; blankDuration=parseInt(this.value)"/>
+                </div>
+                <div style="padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.03); margin-bottom:10px; text-align:center;">
+                  <div style="font-size:8px; letter-spacing:2px; color:rgba(200,200,220,0.5)">PREVIEW: LAYAR PUTIH TOTAL</div>
+                </div>
+                <button class="btn warn" onclick="activateBlank()">◻ AKTIFKAN BLANK SCREEN</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- TES 2 OFFLINE -->
+          <div id="feat-tes2" style="display:none">
+            <div class="card">
+              <div class="card-title">IP CONNECTION (OPSIONAL)</div>
+              <div class="ip-row">
+                <input class="field-input" id="offlineIpFeat" type="text" placeholder="192.168.x.x (optional)"/>
+                <button class="btn" onclick="toast('CONNECTED [OFFLINE]')" style="margin-top:0">CONNECT</button>
+              </div>
+            </div>
+
+            <div class="sec-title">FLASHLIGHT</div>
+            <div class="card"><div class="card-title">SENTER</div>
+              <div class="torch-row">
+                <button class="btn warn" onclick="startTorch()">💡 NYALAKAN</button>
+                <button class="btn danger" onclick="stopTorch()">🔦 MATIKAN</button>
+              </div>
+            </div>
+
+            <div class="sec-title">SENTER KEDIP</div>
+            <div class="card"><div class="card-title">STROBE LIGHT</div>
+              <div class="field-label">KECEPATAN: <span id="strobeVal2">500</span>ms</div>
+              <div class="slider-wrap"><input class="range-slider" type="range" min="50" max="2000" value="500" oninput="document.getElementById('strobeVal2').textContent=this.value"/></div>
+              <div class="torch-row">
+                <button class="btn warn" onclick="startStrobeOff()">⚡ MULAI KEDIP</button>
+                <button class="btn danger" onclick="stopStrobe()">■ STOP</button>
+              </div>
+            </div>
+
+            <div class="sec-title">CAMERA</div>
+            <div class="card"><div class="card-title">KAMERA DEVICE</div>
+              <div class="cam-options">
+                <div class="cam-opt active" onclick="selCam(this,'user')"><span>🤳</span>DEPAN</div>
+                <div class="cam-opt" onclick="selCam(this,'environment')"><span>📷</span>BELAKANG</div>
+              </div>
+              <button class="btn" onclick="requestCamera()" style="margin-top:10px">AKSES KAMERA</button>
+              <button class="btn danger" onclick="stopCamera()" style="margin-top:6px">STOP KAMERA</button>
+            </div>
+
+            <div class="sec-title">GETARAN</div>
+            <div class="card"><div class="card-title">VIBRATION</div>
+              <div class="vib-options">
+                <div class="vib-opt active" onclick="selVib(this,100)">RINGAN</div>
+                <div class="vib-opt" onclick="selVib(this,400)">SEDANG</div>
+                <div class="vib-opt" onclick="selVib(this,900)">KERAS</div>
+              </div>
+              <button class="btn" onclick="triggerVibration()" style="margin-top:10px">KIRIM GETARAN</button>
+            </div>
+
+            <div class="sec-title">LOCK CONTROL</div>
+            <div class="card neon-border">
+              <div class="lock-menu-tabs">
+                <div class="lock-menu-tab active" onclick="switchLockMenu2('prank2',this)">PRANK</div>
+                <div class="lock-menu-tab" onclick="switchLockMenu2('pin2',this)">LOCK PIN</div>
+                <div class="lock-menu-tab" onclick="switchLockMenu2('blank2',this)">BLANK</div>
+              </div>
+              <div class="lock-panel active" id="lockPanel-prank2">
+                <div class="field-wrap">
+                  <div class="field-label">DURASI: <span id="prankDurVal2">20</span>s</div>
+                  <input class="range-slider" type="range" min="20" max="1000" value="20" oninput="document.getElementById('prankDurVal2').textContent=this.value"/>
+                </div>
+                <select class="field-select" style="margin-bottom:10px"><option>BLOKIR SEMUA APLIKASI</option><option>PRANK SETTING</option></select>
+                <button class="btn danger" onclick="activatePrank()">⚡ AKTIFKAN PRANK</button>
+              </div>
+              <div class="lock-panel" id="lockPanel-pin2">
+                <div class="field-wrap">
+                  <div class="field-label">DURASI: <span id="pinDurVal2">60</span>s</div>
+                  <input class="range-slider" type="range" min="10" max="3600" value="60" oninput="document.getElementById('pinDurVal2').textContent=this.value"/>
+                </div>
+                <div class="field-wrap"><input class="field-input" placeholder="Pesan ke target" type="text"/></div>
+                <div class="field-wrap"><input class="field-input" type="password" maxlength="6" placeholder="PIN 6 digit"/></div>
+                <button class="btn danger" onclick="activatePinLock()">🔒 LOCK PIN</button>
+              </div>
+              <div class="lock-panel" id="lockPanel-blank2">
+                <div class="field-wrap">
+                  <div class="field-label">DURASI: <span id="blankDurVal2">30</span>s</div>
+                  <input class="range-slider" type="range" min="5" max="1000" value="30" oninput="document.getElementById('blankDurVal2').textContent=this.value"/>
+                </div>
+                <button class="btn warn" onclick="activateBlank()">◻ BLANK SCREEN</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAGE CREDIT -->
+      <div class="page" id="page-credit">
+        <div class="credit-wrap">
+          <div class="credit-avatar">
+            <img src="profile.mp4" alt="Profile" onerror="this.parentElement.innerHTML='<div style=\'font-size:32px;width:100%;height:100%;display:flex;align-items:center;justify-content:center\'></div>'"/>
+          </div>
+          <div class="credit-name">MASGAL</div>
+          <div class="credit-role">DEVELOPER · VAULT SYSTEM</div>
+          <div class="credit-divider"></div>
+          <div class="credit-item"><div class="credit-item-label">VERSION</div><div class="credit-item-val">v1.0.0</div></div>
+          <div class="credit-item"><div class="credit-item-label">BUILD</div><div class="credit-item-val">2026.05</div></div>
+          <div class="credit-item"><div class="credit-item-label">PLATFORM</div><div class="credit-item-val">WEB · ANDROID</div></div>
+          <div class="credit-item"><div class="credit-item-label">STATUS</div><div class="credit-item-val" style="color:#4cde80">ACTIVE</div></div>
+          <div class="credit-copy">© COPYRIGHT BY MASGAL · ALL RIGHTS RESERVED</div>
+        </div>
+      </div>
+
+    </div><!-- end content -->
+
+    <div class="tabbar">
+      <button class="tab-btn active" onclick="switchPage('device',this)"><div class="tab-icon">📱</div><div class="tab-label">DEVICE</div></button>
+      <button class="tab-btn center-tab" onclick="switchPage('feature',this)"><div class="center-tab-inner"><div class="dot-grid"><span></span><span></span><span></span><span></span></div></div><div class="tab-label" style="margin-top:4px">FITUR</div></button>
+      <button class="tab-btn" onclick="switchPage('credit',this)"><div class="tab-icon">👤</div><div class="tab-label">CREDIT</div></button>
+    </div>
+  </div>
+
+  <div class="toast" id="toastEl"></div>
+
+<script>
+  // ============ STATE ============
+  let currentTorchTrack = null;
+  let strobeInterval    = null;
+  let cameraStream      = null;
+  let currentVibMs      = 100;
+  let selectedDevice    = null;
+  let prankDuration     = 20;
+  let pinLockDuration   = 60;
+  let blankDuration     = 30;
+  let lockPin           = '123456';
+  let isLocked          = false;
+  let lockTimer         = null;
+  let currentCamMode    = 'user';
+
+  // ============ DEVICE (REAL BATTERY) ============
+  const myDevice = {
+    name: (navigator.userAgent.match(/\(([^)]+)\)/)||['','Device'])[1].split(';')[0].trim() || 'THIS DEVICE',
+    meta: navigator.userAgent.match(/Android/) ? 'Android · Web' : 'Web Browser',
+    battery: 85,
+    charging: false,
+    ip: '--'
+  };
+
+  async function initBattery() {
+    if (navigator.getBattery) {
+      const b = await navigator.getBattery();
+      myDevice.battery  = Math.round(b.level * 100);
+      myDevice.charging = b.charging;
+      b.onlevelchange    = () => { myDevice.battery  = Math.round(b.level * 100); renderDeviceList(); };
+      b.onchargingchange = () => { myDevice.charging = b.charging;                renderDeviceList(); };
+    }
+    // Get IP via WebRTC
+    try {
+      const pc = new RTCPeerConnection({iceServers:[]});
+      pc.createDataChannel('');
+      pc.createOffer().then(o => pc.setLocalDescription(o));
+      pc.onicecandidate = e => {
+        if (!e || !e.candidate) return;
+        const m = e.candidate.candidate.match(/(\d+\.\d+\.\d+\.\d+)/);
+        if (m && !m[1].startsWith('169')) { myDevice.ip = m[1]; renderDeviceList(); pc.close(); }
+      };
+    } catch(e) {}
+    renderDeviceList();
+  }
+
+  function renderDeviceList() {
+    const c = document.getElementById('onlineDeviceList');
+    const bat = myDevice.battery;
+    const cls = bat <= 20 ? 'low' : bat <= 50 ? 'mid' : '';
+    const chg = myDevice.charging ? ' charging' : '';
+    c.innerHTML = `
+      <div class="device-item ${selectedDevice ? 'selected' : ''}" onclick="selectDevice(this)">
+        <div class="device-info">
+          <div class="device-icon">📱</div>
+          <div>
+            <div class="device-name">${myDevice.name}</div>
+            <div class="device-meta">${myDevice.meta}</div>
+          </div>
+        </div>
+        <div class="device-right">
+          <div class="battery-wrap">
+            <div class="battery-bar"><div class="battery-fill ${cls}${chg}" style="width:${bat}%"></div></div>
+            <span style="color:rgba(130,130,150,0.6)">${bat}%${myDevice.charging?' ⚡':''}</span>
+          </div>
+          <div class="online-badge">ACTIVE</div>
+        </div>
+      </div>`;
+    if (selectedDevice) renderDeviceDetails();
+  }
+
+  function selectDevice(el) {
+    document.querySelectorAll('.device-item').forEach(d => d.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedDevice = myDevice;
+    document.getElementById('deviceDetails').style.display = '';
+    document.getElementById('noDevicePrompt').style.display = 'none';
+    renderDeviceDetails();
+    // unlock feature page
+    document.getElementById('featureSelectPrompt').style.display = 'none';
+    document.getElementById('featureContent').style.display = '';
+    toast('DEVICE SELECTED');
+  }
+
+  function renderDeviceDetails() {
+    const conn = navigator.connection || {};
+    document.getElementById('connGrid').innerHTML = `
+      <div class="info-cell"><div class="info-label">TYPE</div><div class="info-val">${conn.type || '--'}</div></div>
+      <div class="info-cell"><div class="info-label">EFFECTIVE</div><div class="info-val green">${conn.effectiveType || '--'}</div></div>
+      <div class="info-cell"><div class="info-label">DOWNLINK</div><div class="info-val">${conn.downlink ? conn.downlink+'Mbps' : '--'}</div></div>
+      <div class="info-cell"><div class="info-label">BATTERY</div><div class="info-val ${myDevice.battery<=20?'red':myDevice.battery<=50?'yellow':'green'}">${myDevice.battery}%</div></div>`;
+    document.getElementById('netGrid').innerHTML = `
+      <div class="info-cell"><div class="info-label">IP ADDRESS</div><div class="info-val yellow">${myDevice.ip}</div></div>
+      <div class="info-cell"><div class="info-label">PLATFORM</div><div class="info-val">${navigator.platform||'--'}</div></div>
+      <div class="info-cell"><div class="info-label">LANG</div><div class="info-val">${navigator.language||'--'}</div></div>
+      <div class="info-cell"><div class="info-label">ONLINE</div><div class="info-val green">${navigator.onLine?'YES':'NO'}</div></div>`;
+    document.getElementById('apkStatus').innerHTML = `
+      <div class="apk-status"><div style="font-size:18px">📦</div>
+        <div><div class="apk-name">VAULT AGENT</div><div class="apk-version">Web v1.0.0</div></div>
+        <div class="apk-badge">INSTALLED</div>
+      </div>`;
+  }
+
+  // ============ PAGE SWITCH ============
+  function switchPage(name, el) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    el.classList.add('active');
+    document.querySelector('.content').scrollTop = 0;
+  }
+
+  function switchSub(mode, el) {
+    document.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('sub-online').style.display  = mode === 'online'  ? '' : 'none';
+    document.getElementById('sub-offline').style.display = mode === 'offline' ? '' : 'none';
+  }
+
+  function switchFeat(name, el) {
+    document.querySelectorAll('.feat-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('feat-tes1').style.display = name === 'tes1' ? '' : 'none';
+    document.getElementById('feat-tes2').style.display = name === 'tes2' ? '' : 'none';
+  }
+
+  function switchLockMenu(name, el) {
+    el.closest('.card').querySelectorAll('.lock-menu-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    el.closest('.card').querySelectorAll('.lock-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('lockPanel-' + name).classList.add('active');
+  }
+
+  function switchLockMenu2(name, el) {
+    el.closest('.card').querySelectorAll('.lock-menu-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    el.closest('.card').querySelectorAll('.lock-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('lockPanel-' + name).classList.add('active');
+  }
+
+  // ============ ANTI UNINSTALL (real DeviceAdmin request) ============
+  function handleAntiUninstall(cb) {
+    if (cb.checked) {
+      // Redirect ke settings device admin (Android)
+      try {
+        window.location.href = 'intent:#Intent;action=android.app.action.ADD_DEVICE_ADMIN;end';
+      } catch(e) {}
+      toast('REQUEST DEVICE ADMIN...');
+    } else {
+      toast('ANTI UNINSTALL OFF');
+    }
+  }
+
+  function handleHideIcon(cb) {
+    if (cb.checked) {
+      // Pada web: fullscreen mode sebagai simulasi terbaik
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(()=>{});
+      }
+      toast('FULLSCREEN MODE (HIDE ICON SIMULASI)');
+    } else {
+      if (document.exitFullscreen) document.exitFullscreen().catch(()=>{});
+      toast('NORMAL MODE');
+    }
+  }
+
+  // ============ IP CONNECT ============
+  function connectIP() {
+    const ip   = document.getElementById('ipInput').value.trim();
+    const port = document.getElementById('portInput').value.trim() || '8080';
+    if (!ip) { toast('MASUKKAN IP DULU'); return; }
+    toast('CONNECTING TO ' + ip + ':' + port);
+    document.getElementById('offlineDeviceInfo').style.display = '';
+    document.getElementById('offlineDeviceCard').innerHTML = `
+      <div class="device-item selected">
+        <div class="device-info"><div class="device-icon">🖥️</div>
+          <div><div class="device-name">${ip}</div><div class="device-meta">PORT ${port}</div></div>
+        </div>
+        <div class="device-right"><div class="online-badge">LINKED</div></div>
+      </div>`;
+    document.getElementById('offlineNetGrid').innerHTML = `
+      <div class="info-cell"><div class="info-label">IP</div><div class="info-val yellow">${ip}</div></div>
+      <div class="info-cell"><div class="info-label">PORT</div><div class="info-val">${port}</div></div>`;
+  }
+
+  // ============ TORCH ============
+  async function startTorch() {
+    try {
+      if (currentTorchTrack) { currentTorchTrack.stop(); currentTorchTrack = null; }
+      const s = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'environment' } });
+      const t = s.getVideoTracks()[0];
+      const caps = t.getCapabilities ? t.getCapabilities() : {};
+      if (caps.torch) {
+        await t.applyConstraints({ advanced:[{ torch:true }] });
+        currentTorchTrack = t;
+        toast('SENTER ON ✓');
+      } else {
+        t.stop();
+        toast('TORCH NOT SUPPORTED ON THIS DEVICE');
+      }
+    } catch(e) { toast('AKSES KAMERA DIPERLUKAN'); }
+  }
+
+  function stopTorch() {
+    if (currentTorchTrack) { currentTorchTrack.stop(); currentTorchTrack = null; }
+    if (strobeInterval) { clearInterval(strobeInterval); strobeInterval = null; }
+    toast('SENTER OFF');
+  }
+
+  async function startStrobe() {
+    await stopTorchOnly();
+    const delay = parseInt(document.getElementById('strobeVal').textContent) || 500;
+    try {
+      const s = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'environment' } });
+      const t = s.getVideoTracks()[0];
+      const caps = t.getCapabilities ? t.getCapabilities() : {};
+      if (!caps.torch) { t.stop(); toast('TORCH NOT SUPPORTED'); return; }
+      let state = false;
+      strobeInterval = setInterval(async () => {
+        state = !state;
+        try { await t.applyConstraints({ advanced:[{ torch:state }] }); } catch(e){}
+      }, delay);
+      currentTorchTrack = t;
+      toast('STROBE ON · ' + delay + 'ms');
+    } catch(e) { toast('GAGAL STROBE'); }
+  }
+
+  async function startStrobeOff() {
+    const delay = parseInt(document.getElementById('strobeVal2').textContent) || 500;
+    await startStrobeWithDelay(delay);
+  }
+
+  async function startStrobeWithDelay(delay) {
+    if (strobeInterval) { clearInterval(strobeInterval); strobeInterval = null; }
+    try {
+      const s = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'environment' } });
+      const t = s.getVideoTracks()[0];
+      const caps = t.getCapabilities ? t.getCapabilities() : {};
+      if (!caps.torch) { t.stop(); toast('TORCH NOT SUPPORTED'); return; }
+      let state = false;
+      strobeInterval = setInterval(async () => {
+        state = !state;
+        try { await t.applyConstraints({ advanced:[{ torch:state }] }); } catch(e){}
+      }, delay);
+      currentTorchTrack = t;
+      toast('STROBE ON · ' + delay + 'ms');
+    } catch(e) { toast('GAGAL STROBE'); }
+  }
+
+  function stopStrobe() {
+    if (strobeInterval) { clearInterval(strobeInterval); strobeInterval = null; }
+    if (currentTorchTrack) { currentTorchTrack.stop(); currentTorchTrack = null; }
+    toast('STROBE STOP');
+  }
+
+  async function stopTorchOnly() {
+    if (strobeInterval) { clearInterval(strobeInterval); strobeInterval = null; }
+    if (currentTorchTrack) { currentTorchTrack.stop(); currentTorchTrack = null; }
+  }
+
+  // ============ CAMERA ============
+  function selCam(el, mode) {
+    document.querySelectorAll('.cam-opt').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    currentCamMode = mode;
+  }
+
+  async function requestCamera() {
+    try {
+      if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
+      // Untuk kamera depan, WAJIB pakai facingMode: 'user'
+      const constraints = {
+        video: {
+          facingMode: { exact: currentCamMode === 'user' ? 'user' : 'environment' },
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        }
+      };
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+      } catch(e) {
+        // Fallback tanpa exact
+        cameraStream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode: currentCamMode } });
+      }
+      const vid = document.getElementById('cameraPreview');
+      vid.srcObject = cameraStream;
+      vid.style.display = 'block';
+      toast('KAMERA ' + (currentCamMode === 'user' ? 'DEPAN' : 'BELAKANG') + ' AKTIF');
+    } catch(e) {
+      toast('GAGAL AKSES KAMERA: ' + (e.message || 'Permission denied'));
+    }
+  }
+
+  function stopCamera() {
+    if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
+    const vid = document.getElementById('cameraPreview');
+    if (vid) { vid.srcObject = null; vid.style.display = 'none'; }
+    toast('KAMERA STOP');
+  }
+
+  // ============ VIBRATION ============
+  function selVib(el, ms) {
+    document.querySelectorAll('.vib-opt').forEach(v => v.classList.remove('active'));
+    el.classList.add('active');
+    currentVibMs = ms;
+  }
+
+  function triggerVibration() {
+    if (navigator.vibrate) {
+      if (currentVibMs <= 150)      navigator.vibrate([100, 50, 100]);
+      else if (currentVibMs <= 500) navigator.vibrate([300, 100, 300]);
+      else                          navigator.vibrate([800, 100, 800, 100, 800]);
+      toast('GETARAN ' + currentVibMs + 'ms ✓');
+    } else {
+      toast('VIBRATE TIDAK DIDUKUNG');
+    }
+  }
+
+  // ============ LOCK CONTROL ============
+  function updateLockUI(locked) {
+    isLocked = locked;
+    const icon  = document.getElementById('lockAdminIcon');
+    const stat  = document.getElementById('lockAdminStatus');
+    const sub   = document.getElementById('lockAdminSub');
+    const badge = document.getElementById('lockAdminBadge');
+    const hdr   = document.getElementById('lockAdminHeader');
+    if (locked) {
+      icon.textContent  = '🔒'; icon.classList.remove('unlocked');
+      stat.textContent  = 'LOCKED'; stat.classList.remove('unlocked');
+      sub.textContent   = 'DEVICE TERKUNCI';
+      badge.textContent = 'LOCKED'; badge.classList.remove('ok');
+      hdr.style.borderColor = 'rgba(240,96,96,0.25)';
+      hdr.style.background  = 'rgba(240,96,96,0.06)';
+    } else {
+      icon.textContent  = '🔓'; icon.classList.add('unlocked');
+      stat.textContent  = 'UNLOCKED'; stat.classList.add('unlocked');
+      sub.textContent   = 'DEVICE TIDAK TERKUNCI';
+      badge.textContent = 'CLEAR'; badge.classList.add('ok');
+      hdr.style.borderColor = 'rgba(76,222,128,0.18)';
+      hdr.style.background  = 'rgba(76,222,128,0.04)';
+    }
+  }
+
+  function activatePrank() {
+    const dur  = prankDuration;
+    const type = document.getElementById('prankHtmlType')?.value || 'block';
+    let html = '';
+    if (type === 'block') {
+      html = `<div style="position:fixed;inset:0;background:#000;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;color:#f33;">
+        <div style="font-size:28px;margin-bottom:16px">🚫</div>
+        <div style="font-size:14px;letter-spacing:3px;margin-bottom:8px">SYSTEM BLOCKED</div>
+        <div style="font-size:9px;letter-spacing:2px;opacity:0.5">ALL APPS DISABLED</div>
+      </div>`;
+    } else {
+      html = `<div style="position:fixed;inset:0;background:#111;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;color:#f90;padding:20px;text-align:center;">
+        <div style="font-size:28px;margin-bottom:16px">⚙️</div>
+        <div style="font-size:13px;letter-spacing:3px;margin-bottom:12px">SYSTEM UPDATE</div>
+        <div style="font-size:9px;letter-spacing:2px;opacity:0.6">Installing critical updates...<br/>Do not turn off your device</div>
+        <div style="width:80%;height:4px;background:#333;border-radius:4px;margin-top:20px;overflow:hidden;">
+          <div id="prankBar" style="height:100%;background:#f90;border-radius:4px;width:0%;transition:width 0.5s"></div>
+        </div>
+      </div>`;
+    }
+    const el = document.createElement('div');
+    el.id = 'prankOverlay';
+    el.innerHTML = html;
+    document.body.appendChild(el);
+    updateLockUI(true);
+    toast('PRANK AKTIF · ' + dur + 's');
+
+    if (type === 'prank_setting') {
+      let pct = 0;
+      const bar = setInterval(() => { pct = Math.min(pct + Math.random()*5, 100); const b = document.getElementById('prankBar'); if (b) b.style.width = pct + '%'; if (pct >= 100) clearInterval(bar); }, 400);
+    }
+
+    lockTimer = setTimeout(() => {
+      const ov = document.getElementById('prankOverlay');
+      if (ov) ov.remove();
+      updateLockUI(false);
+      toast('PRANK SELESAI');
+    }, dur * 1000);
+  }
+
+  function activatePinLock() {
+    const pin = document.getElementById('pinLockCode').value.trim();
+    const msg = document.getElementById('pinLockMsg').value.trim() || 'Device dikunci oleh admin';
+    const dur = pinLockDuration;
+    if (pin.length !== 6) { toast('PIN HARUS 6 DIGIT'); return; }
+    lockPin = pin;
+    const overlay = document.getElementById('lockOverlay');
+    document.getElementById('lockOverlayMsg').textContent  = msg;
+    document.getElementById('lockOverlaySub').textContent  = 'ENTER ' + pin.length + '-DIGIT PIN TO UNLOCK';
+    overlay.classList.add('show');
+    updateLockUI(true);
+    document.getElementById('unlockPinInput').value = '';
+    toast('LOCKED · PIN SET · ' + dur + 's');
+    lockTimer = setTimeout(() => { deactivateLock(); toast('LOCK EXPIRED'); }, dur * 1000);
+  }
+
+  function tryUnlock() {
+    const entered = document.getElementById('unlockPinInput').value;
+    if (entered === lockPin) {
+      document.getElementById('lockOverlay').classList.remove('show');
+      updateLockUI(false);
+      if (lockTimer) { clearTimeout(lockTimer); lockTimer = null; }
+      toast('UNLOCKED ✓');
+    } else {
+      document.getElementById('unlockPinInput').value = '';
+      if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+      toast('PIN SALAH!');
+    }
+  }
+
+  function deactivateLock() {
+    document.getElementById('lockOverlay').classList.remove('show');
+    const ov = document.getElementById('prankOverlay');
+    if (ov) ov.remove();
+    removeBlank();
+    if (lockTimer) { clearTimeout(lockTimer); lockTimer = null; }
+    updateLockUI(false);
+    toast('UNLOCKED');
+  }
+
+  function activateBlank() {
+    const dur = blankDuration;
+    document.getElementById('blankOverlay').classList.add('show');
+    updateLockUI(true);
+    toast('BLANK SCREEN · ' + dur + 's');
+    lockTimer = setTimeout(() => { removeBlank(); toast('BLANK SELESAI'); }, dur * 1000);
+  }
+
+  function removeBlank() {
+    document.getElementById('blankOverlay').classList.remove('show');
+    updateLockUI(false);
+  }
+
+  // ============ TOAST ============
+  let toastTimer;
+  function toast(msg) {
+    const el = document.getElementById('toastEl');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove('show'), 2000);
+  }
+
+  // ============ INIT ============
+  initBattery();
+  // Show no device prompt initially
+  document.getElementById('noDevicePrompt').style.display = '';
+  document.getElementById('deviceDetails').style.display  = 'none';
+</script>
+</body>
+</html>

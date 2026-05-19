@@ -1,1 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VAULT LOGIN</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      font-family: 'Orbitron', sans-serif;
+      background: #0d0d0f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-x: hidden;
+    }
+
+    #bg-video {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      opacity: 0.75;
+      filter: grayscale(0%) brightness(0.95);
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(6,6,8,0.9), rgba(18,18,22,0.93));
+      z-index: 1;
+    }
+
+    .card {
+      position: relative;
+      z-index: 10;
+      background: rgba(14,14,17,0.88);
+      border: 1px solid rgba(160,160,180,0.12);
+      border-radius: 24px;
+      padding: 44px 36px 40px;
+      width: 340px;
+      max-width: calc(100vw - 40px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      animation: cardIn 0.8s cubic-bezier(.22,1,.36,1) both;
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: 25px;
+      background: linear-gradient(130deg,
+        rgba(160,160,180,0.22) 0%,
+        transparent 45%,
+        rgba(160,160,185,0.18) 100%
+      );
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      animation: borderPulse 3s ease-in-out infinite;
+      z-index: 0;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(30px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    @keyframes borderPulse {
+      0%,100% { opacity: 0.5; }
+      50%      { opacity: 1; }
+    }
+
+    .corner {
+      position: absolute;
+      width: 12px; height: 12px;
+      border-color: rgba(180,180,200,0.35);
+      border-style: solid;
+      z-index: 2;
+    }
+    .corner-tl { top: 10px; left: 10px;   border-width: 1.5px 0 0 1.5px; border-radius: 3px 0 0 0; }
+    .corner-tr { top: 10px; right: 10px;  border-width: 1.5px 1.5px 0 0; border-radius: 0 3px 0 0; }
+    .corner-bl { bottom: 10px; left: 10px;  border-width: 0 0 1.5px 1.5px; border-radius: 0 0 0 3px; }
+    .corner-br { bottom: 10px; right: 10px; border-width: 0 1.5px 1.5px 0; border-radius: 0 0 3px 0; }
+
+    .profile-wrap {
+      position: relative;
+      margin-bottom: 22px;
+      animation: fadeUp 0.6s 0.15s both;
+    }
+
+    .profile-ring {
+      position: absolute;
+      inset: -5px;
+      border-radius: 25px;
+      border: 1.5px solid rgba(200,200,220,0.2);
+      animation: ringPulse 2.8s ease-in-out infinite;
+    }
+
+    @keyframes ringPulse {
+      0%,100% { opacity: 0.25; transform: scale(1); }
+      50%      { opacity: 0.8; transform: scale(1.025); }
+    }
+
+    .profile-img-box {
+      width: 86px;
+      height: 86px;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1.5px solid rgba(180,180,200,0.16);
+      background: #1c1c21;
+    }
+
+    .profile-img-box img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .title {
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: 5px;
+      color: #dcdce6;
+      margin-bottom: 5px;
+      text-align: center;
+      animation: fadeUp 0.6s 0.22s both;
+      text-shadow: 0 0 20px rgba(200,200,220,0.22);
+    }
+
+    .subtitle {
+      font-size: 8px;
+      letter-spacing: 3.5px;
+      color: rgba(140,140,160,0.45);
+      margin-bottom: 30px;
+      text-align: center;
+      animation: fadeUp 0.6s 0.3s both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .input-group {
+      width: 100%;
+      margin-bottom: 14px;
+      animation: fadeUp 0.6s 0.38s both;
+    }
+
+    .input-group:nth-of-type(2) { animation-delay: 0.44s; }
+
+    .input-group label {
+      display: block;
+      font-size: 7.5px;
+      letter-spacing: 2.5px;
+      color: rgba(150,150,170,0.5);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .input-wrap { position: relative; }
+
+    .input-wrap input {
+      width: 100%;
+      background: rgba(20,20,24,0.92);
+      border: 1px solid rgba(120,120,140,0.18);
+      border-radius: 10px;
+      color: #d0d0dc;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      padding: 12px 42px 12px 14px;
+      outline: none;
+      transition: border-color 0.35s, background 0.35s;
+      display: block;
+    }
+
+    .input-wrap input::placeholder {
+      color: rgba(120,120,140,0.3);
+      letter-spacing: 1px;
+    }
+
+    .input-wrap input:focus {
+      border-color: rgba(200,200,220,0.35);
+      background: rgba(24,24,28,0.96);
+    }
+
+    .input-wrap input:focus ~ .input-glow { opacity: 1; }
+
+    .input-glow {
+      position: absolute;
+      inset: -1px;
+      border-radius: 11px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.4s;
+      animation: glowPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes glowPulse {
+      0%,100% { box-shadow: 0 0 7px rgba(215,215,235,0.28), 0 0 18px rgba(195,195,218,0.1); }
+      50%      { box-shadow: 0 0 13px rgba(225,225,242,0.5), 0 0 28px rgba(205,205,228,0.22); }
+    }
+
+    .eye-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: rgba(140,140,160,0.45);
+      display: flex;
+      align-items: center;
+      padding: 0;
+      transition: color 0.2s;
+    }
+
+    .eye-btn:hover { color: rgba(200,200,220,0.85); }
+    .eye-btn svg { width: 16px; height: 16px; }
+
+    .btn-continue {
+      width: 100%;
+      margin-top: 8px;
+      padding: 13px;
+      background: rgba(22,22,27,0.95);
+      border: 1px solid rgba(160,160,185,0.22);
+      border-radius: 10px;
+      color: #c8c8d8;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 4.5px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, color 0.3s, background 0.3s, transform 0.1s;
+      animation: fadeUp 0.6s 0.5s both;
+    }
+
+    .btn-continue::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(190,190,210,0.07), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.55s ease;
+    }
+
+    .btn-continue:hover::before { transform: translateX(100%); }
+    .btn-continue:hover { border-color: rgba(200,200,225,0.4); color: #e8e8f2; }
+    .btn-continue:active { transform: scale(0.984); }
+    .btn-continue:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .status-text {
+      margin-top: 10px;
+      font-size: 7.5px;
+      letter-spacing: 2.5px;
+      color: rgba(140,140,160,0.45);
+      min-height: 13px;
+      text-align: center;
+      animation: fadeUp 0.6s 0.55s both;
+      transition: color 0.3s;
+    }
+    .status-text.loading { color: rgba(170,170,200,0.7); }
+    .status-text.error   { color: rgba(240,100,100,0.8); }
+    .status-text.ready   { color: rgba(110,220,140,0.8); }
+
+    /* FOOTER */
+    .footer {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 20px;
+      animation: fadeUp 0.6s 0.6s both;
+    }
+    .footer span { flex: 1; height: 1px; background: rgba(120,120,140,0.1); }
+    .footer p {
+      font-size: 7px;
+      letter-spacing: 1.5px;
+      color: rgba(120,120,140,0.38);
+      white-space: nowrap;
+    }
+
+    /* FEEDBACK */
+    .feedback-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(6,6,8,0.75);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .feedback-overlay.show { opacity: 1; pointer-events: all; }
+
+    .feedback-icon {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .feedback-icon svg { animation: popIn 0.45s cubic-bezier(.22,1,.36,1) both; }
+
+    @keyframes popIn {
+      from { transform: scale(0.2); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+
+    .feedback-circle { fill: none; stroke-width: 2.5; }
+    .feedback-path   { fill: none; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+
+    .feedback-overlay.success .feedback-circle {
+      stroke: rgba(100,240,140,0.9);
+      filter: drop-shadow(0 0 12px rgba(60,255,110,0.6));
+    }
+    .feedback-overlay.success .feedback-path {
+      stroke: rgba(120,255,160,0.95);
+      filter: drop-shadow(0 0 8px rgba(60,255,110,0.65));
+    }
+    .feedback-overlay.fail .feedback-circle {
+      stroke: rgba(255,85,85,0.9);
+      filter: drop-shadow(0 0 12px rgba(255,50,50,0.6));
+    }
+    .feedback-overlay.fail .feedback-path {
+      stroke: rgba(255,105,105,0.95);
+      filter: drop-shadow(0 0 8px rgba(255,50,50,0.65));
+    }
+
+    .feedback-label {
+      position: absolute;
+      bottom: -42px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 9px;
+      letter-spacing: 4px;
+      white-space: nowrap;
+      opacity: 0;
+    }
+    .feedback-overlay.success .feedback-label { color: rgba(120,255,160,0.9); }
+    .feedback-overlay.fail    .feedback-label { color: rgba(255,105,105,0.9); }
+  </style>
+</head>
+<body>
+
+  <video id="bg-video" autoplay muted loop playsinline>
+    <source src="bg.mp4" type="video/mp4"/>
+  </video>
+  <div class="overlay"></div>
+
+  <div class="feedback-overlay" id="feedbackOverlay">
+    <div class="feedback-icon">
+      <svg id="feedbackSvg" viewBox="0 0 100 100" width="120" height="120">
+        <circle class="feedback-circle" id="feedbackCircle" cx="50" cy="50" r="42"/>
+        <path class="feedback-path" id="feedbackPath"/>
+      </svg>
+      <span class="feedback-label" id="feedbackLabel"></span>
+    </div>
+  </div>
+
+  <div class="card" id="mainCard">
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-tr"></div>
+    <div class="corner corner-bl"></div>
+    <div class="corner corner-br"></div>
+
+    <div class="profile-wrap">
+      <div class="profile-ring"></div>
+      <div class="profile-img-box">
+<div class="profile-img-box">
+  <video autoplay muted loop playsinline
+    style="width:100%;height:100%;object-fit:cover;display:block;">
+    <source src="profile.mp4" type="video/mp4"/>
+  </video>
+</div>
+      </div>
+    </div>
+
+    <div class="title">VAULT LOGIN</div>
+    <div class="subtitle">SECURE ACCESS TERMINAL</div>
+
+    <div class="input-group">
+      <label>Email Address</label>
+      <div class="input-wrap">
+        <input type="text" id="emailInput" placeholder="user@vault.io" autocomplete="off"/>
+        <div class="input-glow"></div>
+        <button class="eye-btn" onclick="toggleEmail()" type="button">
+          <svg id="emailEyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>Password</label>
+      <div class="input-wrap">
+        <input type="password" id="passInput" placeholder="••••••••••••" autocomplete="off"/>
+        <div class="input-glow"></div>
+        <button class="eye-btn" onclick="togglePass()" type="button">
+          <svg id="passEyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <button class="btn-continue" id="loginBtn" onclick="handleLogin()" type="button">CONTINUE</button>
+    <div class="status-text loading" id="statusText">CONNECTING...</div>
+
+    <div class="footer">
+      <span></span>
+      <p>© COPYRIGHT BY MASGAL</p>
+      <span></span>
+    </div>
+  </div>
+
+  <script>
+    // Coba beberapa URL proxy untuk bypass CORS
+    const GIST_ID  = "b92c22ed9df589a75ea487a70125e0b0";
+    const GIST_USER = "zyykentang804-bot";
+    const FILE_NAME = "data.json";
+
+    const URLS = [
+      // jsdelivr — mirror Gist, support CORS
+      `https://cdn.jsdelivr.net/gh/${GIST_USER}/${GIST_ID}/${FILE_NAME}`,
+      // raw gist langsung
+      `https://gist.githubusercontent.com/${GIST_USER}/${GIST_ID}/raw/${FILE_NAME}`,
+      // gist raw tanpa filename
+      `https://gist.githubusercontent.com/${GIST_USER}/${GIST_ID}/raw`
+    ];
+
+    let validEmail = null;
+    let validPass  = null;
+
+    async function loadCredentials() {
+      const status = document.getElementById('statusText');
+      const btn    = document.getElementById('loginBtn');
+      btn.disabled    = true;
+      btn.textContent = 'CONTINUE';
+      status.className   = 'status-text loading';
+      status.textContent = 'CONNECTING...';
+
+      let data = null;
+
+      for (const url of URLS) {
+        try {
+          const res = await fetch(url + '?t=' + Date.now(), { cache: 'no-store' });
+          if (!res.ok) continue;
+          data = await res.json();
+          if (data) break;
+        } catch (e) { continue; }
+      }
+
+      if (!data) {
+        status.className   = 'status-text error';
+        status.textContent = 'CONNECTION FAILED · TAP RETRY';
+        btn.disabled    = false;
+        btn.textContent = 'RETRY';
+        btn.onclick     = () => { btn.onclick = handleLogin; loadCredentials(); };
+        return;
+      }
+
+      validEmail = (data.email || data.mail || data.username || '').trim();
+      validPass  = (data.password || data.pass || '').trim();
+
+      if (!validEmail || !validPass) {
+        status.className   = 'status-text error';
+        status.textContent = 'INVALID DATA FORMAT';
+        btn.disabled = false;
+        return;
+      }
+
+      status.className   = 'status-text ready';
+      status.textContent = 'VAULT READY';
+      btn.disabled    = false;
+      btn.textContent = 'CONTINUE';
+      btn.onclick     = handleLogin;
+      setTimeout(() => {
+        status.textContent = '';
+        status.className   = 'status-text';
+      }, 2000);
+    }
+
+    loadCredentials();
+
+    let emailVisible = true;
+    function toggleEmail() {
+      const inp  = document.getElementById('emailInput');
+      const icon = document.getElementById('emailEyeIcon');
+      emailVisible = !emailVisible;
+      inp.style.webkitTextSecurity = emailVisible ? '' : 'disc';
+      icon.innerHTML = emailVisible
+        ? `<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/>`
+        : `<path d="M17.94 17.94A10.94 10.94 0 0112 20C5 20 1 12 1 12a18.5 18.5 0 015.06-5.94M9.9 4.24A9.77 9.77 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19M1 1l22 22"/>`;
+    }
+
+    function togglePass() {
+      const inp  = document.getElementById('passInput');
+      const icon = document.getElementById('passEyeIcon');
+      const show = inp.type === 'password';
+      inp.type   = show ? 'text' : 'password';
+      icon.innerHTML = show
+        ? `<path d="M17.94 17.94A10.94 10.94 0 0112 20C5 20 1 12 1 12a18.5 18.5 0 015.06-5.94M9.9 4.24A9.77 9.77 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19M1 1l22 22"/>`
+        : `<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/>`;
+    }
+
+    function handleLogin() {
+      if (!validEmail || !validPass) { loadCredentials(); return; }
+      const email = document.getElementById('emailInput').value.trim();
+      const pass  = document.getElementById('passInput').value;
+      showFeedback(email === validEmail && pass === validPass ? 'success' : 'fail');
+    }
+
+    function showFeedback(type) {
+  const overlay = document.getElementById('feedbackOverlay');
+  const path    = document.getElementById('feedbackPath');
+  const label   = document.getElementById('feedbackLabel');
+
+  overlay.className = 'feedback-overlay';
+  void overlay.offsetWidth;
+  overlay.classList.add('show', type);
+
+  if (type === 'success') {
+    path.setAttribute('d', 'M28 52 L44 68 L72 34');
+    path.style.cssText = 'stroke-dasharray:70;stroke-dashoffset:70;animation:drawCheck 0.55s 0.3s ease forwards;';
+    label.textContent = 'ACCESS GRANTED';
+
+    // Redirect ke dashboard.html setelah animasi selesai
+    setTimeout(() => {
+      window.location.href = 'dashboard.html';
+    }, 2000);
+
+  } else {
+    path.setAttribute('d', 'M33 33 L67 67 M67 33 L33 67');
+    path.style.cssText = 'stroke-dasharray:100;stroke-dashoffset:100;animation:drawX 0.45s 0.25s ease forwards;';
+    label.textContent = 'ACCESS DENIED';
+    const card = document.getElementById('mainCard');
+    card.style.animation = 'shake 0.45s ease';
+    setTimeout(() => { card.style.animation = ''; }, 500);
+
+    // Tutup overlay gagal setelah 2.4 detik
+    setTimeout(() => {
+      overlay.classList.remove('show','success','fail');
+    }, 2400);
+  }
+
+  label.style.cssText = 'opacity:0;animation:labelFadeUp 0.4s 0.65s forwards;';
+}
+
+    document.addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+
+    const st = document.createElement('style');
+    st.textContent = `
+      @keyframes drawCheck { to { stroke-dashoffset: 0; } }
+      @keyframes drawX     { to { stroke-dashoffset: 0; } }
+      @keyframes shake {
+        0%,100%{transform:translateX(0)}
+        20%{transform:translateX(-9px)}
+        40%{transform:translateX(9px)}
+        60%{transform:translateX(-5px)}
+        80%{transform:translateX(5px)}
+      }
+      @keyframes labelFadeUp {
+        from{opacity:0;transform:translateX(-50%) translateY(8px)}
+        to{opacity:1;transform:translateX(-50%) translateY(0)}
+      }
+    `;
+    document.head.appendChild(st);
+  </script>
+</body>
+</html>
